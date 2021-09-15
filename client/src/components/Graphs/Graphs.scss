@@ -1,0 +1,16 @@
+.graphs {
+	margin-left: 20px;
+	// &__name {
+	// }
+	&__graph1 {
+		width: 250px;
+		height: 250px;
+		background-color: darkslategrey;
+		margin-bottom: 20px;
+	}
+	&__graph2 {
+		width: 250px;
+		height: 250px;
+		background-color: darkslategrey;
+	}
+}

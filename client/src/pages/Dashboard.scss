@@ -1,0 +1,30 @@
+.dashboard {
+	display: flex;
+	flex-direction: column;
+	// text-align: center;
+	align-items: center;
+	// flex-wrap: wrap;
+	background-color: lightgray;
+	// margin: 0 auto;
+  // border: dashed 5px blue;
+  // add dashboard__container for response design
+  
+
+	&__instruments {
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+	}
+}
+.bold {
+	font-weight: 600;
+}
+.bolder {
+	font-weight: 900;
+}
+.black {
+	color: black;
+}
+.underline {
+	text-decoration: underline;
+}
