@@ -1,7 +1,5 @@
 import React, { Component } from "react";
-// import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
-// import { MapContainer } from "react-leaflet";
-import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
+import { MapContainer, TileLayer } from "react-leaflet"; //  Marker, Popup,
 import { URL_CUSTOM_OUTDOORS_DARKER } from '../../utils/MapboxToken';
 import 'leaflet/dist/leaflet.css';
 
