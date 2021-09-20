@@ -2,7 +2,7 @@
 // Use raster tiles for this project https://docs.mapbox.com/api/maps/static-tiles/
 
 // To get up and running without designing tiles, use the Open Street Map Tiles that come with Leaflet
-// Simple make sure the Open Street Map tile layer is uncomented out in ArtMap.jsx
+// Simple make sure the Open Street Map tile layer is uncomment out in ArtMap.jsx
 
 {
 	/* <TileLayer
@@ -22,3 +22,6 @@ export const STYLE_OUTDOORS_DARKER = "your-custome-style";
 
 export const URL_CUSTOM_OUTDOORS = `https://api.mapbox.com/styles/v1/${USERNAME}/${STYLE_OUTDOORS}/tiles/256/{z}/{x}/{y}@2x?access_token=${ACCESS_TOKEN}`;
 export const URL_CUSTOM_OUTDOORS_DARKER = `https://api.mapbox.com/styles/v1/${USERNAME}/${STYLE_OUTDOORS_DARKER}/tiles/256/{z}/{x}/{y}@2x?access_token=${ACCESS_TOKEN}`;
+
+// Using Tile Layers with Plotly
+// https://plotly.com/javascript/mapbox-layers/#base-tiles-from-the-usgs-radar-overlay-from-environment-canada-no-token-needed
