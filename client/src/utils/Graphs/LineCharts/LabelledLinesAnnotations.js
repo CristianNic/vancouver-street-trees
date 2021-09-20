@@ -1,6 +1,7 @@
 // Source: https://plotly.com/javascript/line-charts/
 
 export function LabelledLinesAnnotations(xData, yData, labels) {
+  
 	var colors = [
 		"rgba(67,67,67,1)",
 		"rgba(115,115,115,1)",
