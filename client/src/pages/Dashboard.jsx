@@ -3,8 +3,8 @@ import axios from 'axios';
 import Header from "../components/Header/Header";
 import Map from "../components/Map/Map";
 import Graphs from "../components/Graphs/Graphs";
-import GraphMain from "../components/GraphMain/GraphMain";
 import Footer from "../components/Footer/Footer";
+import Chart from "../components/Chart/Chart";
 
 // 1st Neighbourhood: MOUNT PLEASANT 6,500+ trees
 // API --> (neighbourhood, Geom,)(Genus, Species, Common)(diameter when planted, year)
@@ -40,10 +40,10 @@ const API_URL_NEIGHBOURHOOD = BASE_URL + DATASET + FACET_COMMON_NAME + REFINE_NE
 //   + "?dataset=street-trees&q=&rows=400&facet=common_name&facet=neighbourhood_name&facet=date_planted&refine.neighbourhood_name="
 //   + NEIGHBOURHOOD + "&refine.common_name=PYRAMIDAL+EUROPEAN+HORNBEAM"
 
-const TREE_COMMON_NAME = "PYRAMIDAL+EUROPEAN+HORNBEAM"
-const API_URL_WITH_NEIGHBOURHOOD_AND_COMMON_NAME =
-  BASE_URL + DATASET + FACET_COMMON_NAME + FACET_NEIGHBOURHOOD + FACET_DATE_PLANTED
-  + REFINE_NEIGHBOURHOOD + NEIGHBOURHOOD + REFINE_COMMON_NAME + TREE_COMMON_NAME
+// const TREE_COMMON_NAME = "PYRAMIDAL+EUROPEAN+HORNBEAM"
+// const API_URL_WITH_NEIGHBOURHOOD_AND_COMMON_NAME =
+//   BASE_URL + DATASET + FACET_COMMON_NAME + FACET_NEIGHBOURHOOD + FACET_DATE_PLANTED
+//   + REFINE_NEIGHBOURHOOD + NEIGHBOURHOOD + REFINE_COMMON_NAME + TREE_COMMON_NAME
 
 // const API_URL_WITH_NEIGHBOURHOOD_AND_COMMON_NAME = BASE_URL + DATASET
 //   + "&facet=common_name&facet=neighbourhood_name&facet=date_planted&refine.neighbourhood_name="
@@ -85,147 +85,120 @@ class Dashboard extends Component {
     fifthTreeCount: []
   }
 
-  async componentDidMount() {
-    // ---- Make first request ---- //
-    const getTop5Trees = await Promise.all([
-      axios.get(`${API_URL_NEIGHBOURHOOD}`)])
+  // async componentDidMount() {
+  //   // ---- Make first request ---- //
+  //   const getTop5Trees = await Promise.all([
+  //     axios.get(`${API_URL_NEIGHBOURHOOD}`)])
     
-    const AllTheData = getTop5Trees 
-    console.log('----> AllTheData <--- :', AllTheData)
-    
-    const confirmNeighbourhood = getTop5Trees[0].data.facet_groups[1].facets[0].name
-    console.log('confirmNeighbourhood:', confirmNeighbourhood)
-    const neighbourhoodLowerCaps = this.capitalizeFirstLetter(confirmNeighbourhood)
-    console.log('neighbourhoodLowerCaps:', neighbourhoodLowerCaps)
-
-    const top5AllData = getTop5Trees[0].data.facet_groups[0].facets.slice(0, 5)
-    // console.log("getTreesTop5", top5)
-    const top5Array = top5AllData.map(treeName => treeName.name)
-    // console.log('top5Array:', top5Array)
-    const top5ArrayLowerCaps = top5Array.map(item => this.capitalizeFirstLetter(item))
-    console.log('top5ArrayLowerCaps:', top5ArrayLowerCaps)
-
-    const addPlusSigns = top5Array.map(treeName => treeName.replaceAll(' ', '+'))
-    console.log('addPlusSigns2:', addPlusSigns)
-    
-    // ---- Formulate URLs for the next 5 requests ---- //
-    const API_URL_NEIGHBOURHOOD_DATE_NAME = BASE_URL + DATASET + FACET_COMMON_NAME + FACET_NEIGHBOURHOOD + FACET_DATE_PLANTED
-                                          + REFINE_NEIGHBOURHOOD + NEIGHBOURHOOD + REFINE_COMMON_NAME
-    
-    const first = API_URL_NEIGHBOURHOOD_DATE_NAME + addPlusSigns[0]
-    // console.log('first:', first)
-    const second = API_URL_NEIGHBOURHOOD_DATE_NAME + addPlusSigns[1]
-    // console.log('second:', second)
-    const third = API_URL_NEIGHBOURHOOD_DATE_NAME + addPlusSigns[2]
-    // console.log('third:', third)
-    const fourth = API_URL_NEIGHBOURHOOD_DATE_NAME + addPlusSigns[3]
-    // console.log('fourth:', fourth)
-    const fifth = API_URL_NEIGHBOURHOOD_DATE_NAME + addPlusSigns[4]
-    // console.log('fifth:', fifth)
-
-    const firstTree = await axios.get(first)   // removed await 
-    console.log('firstTree:', firstTree)
-    const secondTree = await axios.get(second)
-    console.log('secondTree:', secondTree)
-    const thirdTree = await axios.get(third)
-    console.log('thirdTree:', thirdTree)
-    const fourthTree = await axios.get(fourth)
-    console.log('fourthTree:', fourthTree)
-    const fifthTree = await axios.get(fifth)
-    console.log('fifthTree:', fifthTree)
-
-    const totalCounts = [firstTree.data.nhits, secondTree.data.nhits, thirdTree.data.nhits,
-                         fourthTree.data.nhits, fifthTree.data.nhits]
-    console.log('Total Counts:', totalCounts)
-
-    // Years 
-    const firstTreeYears = firstTree.data.facet_groups[2].facets.map((year) => year.name)
-    console.log('firstTreeYears:', firstTreeYears)
-    const secondTreeYears = firstTree.data.facet_groups[2].facets.map((year) => year.name)
-    console.log('secondTreeYears:', secondTreeYears)
-    const thirdTreeYears = thirdTree.data.facet_groups[2].facets.map((year) => year.name)
-    console.log('thirdTreeYears:', thirdTreeYears)
-    const fourthTreeYears = fourthTree.data.facet_groups[2].facets.map((year) => year.name)
-    console.log('fourthTreeYears:', fourthTreeYears)
-    const fifthTreeYears = fifthTree.data.facet_groups[2].facets.map((year) => year.name)
-    console.log('fifthTreeYears:', fifthTreeYears)
-
-    // Count 
-    const firstTreeCount = firstTree.data.facet_groups[2].facets.map((count) => count.count)
-    console.log('firstTreeCount:', firstTreeCount)
-    const secondTreeCount = firstTree.data.facet_groups[2].facets.map((count) => count.count)
-    console.log('secondTreeCount:', secondTreeCount)
-    const thirdTreeCount = thirdTree.data.facet_groups[2].facets.map((count) => count.count)
-    console.log('thirdTreeCount:', thirdTreeCount)
-    const fourthTreeCount = fourthTree.data.facet_groups[2].facets.map((count) => count.count)
-    console.log('fourthTreeCount:', fourthTreeCount)
-    const fifthTreeCount = fifthTree.data.facet_groups[2].facets.map((count) => count.count)
-    console.log('fifthTreeCount:', fifthTreeCount)
-
-    this.setState({
-      // neighbourhood: confirmNeighbourhood,  // Goes to Header 
-      neighbourhoodLowerCaps: neighbourhoodLowerCaps,
-      top5AllData: top5AllData,      
-      // top5Array: top5Array,
-      top5ArrayLowerCaps: top5ArrayLowerCaps,                 // Graph Labels
-      totalCounts: totalCounts,
-      firstTreeYears: firstTreeYears,
-      secondTreeYears: secondTreeYears,
-      thirdTreeYears: thirdTreeYears,
-      fourthTreeYears: fourthTreeYears,
-      fifthTreeYears: fifthTreeYears,
-      firstTreeCount: firstTreeCount,
-      secondTreeCount: secondTreeCount,
-      thirdTreeCount: thirdTreeCount,
-      fourthTreeCount: fourthTreeCount,
-      fifthTreeCount: fifthTreeCount
-    })
-    
-  }
-
-  componentDidUpdate() {
-    this.formatGraphData()
-  }
-
-  formatGraphData() {
-    
-    const { firstTreeYears, secondTreeYears, thirdTreeYears, fourthTreeYears, fifthTreeYears,
-            firstTreeCount, secondTreeCount, thirdTreeCount, fourthTreeCount, fifthTreeCount
-          } = this.state;
-    // Change Labels from YYYY to 'YY
-  
-
-    const xDataYears = [firstTreeYears, secondTreeYears, thirdTreeYears, fourthTreeYears]
-    const yDataCount = [firstTreeCount, secondTreeCount, thirdTreeCount, fourthTreeCount]
-
-    // const xDataYearsCleaned = xDataYears.map(years => years.map(year => this.formatYears(year)))
-    // console.log('xDataYearsCleaned:', xDataYearsCleaned)
-
-    const xDataYearsYY = xDataYears.map(array => array.map(year => "'" + year.substring(2)))
-    console.log('xDataYearsYY:', xDataYearsYY)
-    
-    console.log('xDataYears:', xDataYears)
-    console.log('yDataCount:', yDataCount)
-    
-    return { xDataYears, yDataCount }
-  }
-
-  // formatYears(year) {
-  //   // Change Labels from YYYY to 'YY
-  //   const test = '2000'
-  //   const str = "'" + test.substring(2)
-  //   console.log('str:', str)
   // }
 
-  capitalizeFirstLetter(sentence) {
-    const words = sentence.split(" ");
+  // async componentDidMount() {
+  //   // ---- Make first request ---- //
+  //   const getTop5Trees = await Promise.all([
+  //     axios.get(`${API_URL_NEIGHBOURHOOD}`)])
+    
+  //   const AllTheData = getTop5Trees 
+  //   console.log('----> AllTheData <--- :', AllTheData)
+    
+  //   const confirmNeighbourhood = getTop5Trees[0].data.facet_groups[1].facets[0].name
+  //   console.log('confirmNeighbourhood:', confirmNeighbourhood)
+  //   const neighbourhoodLowerCaps = this.capitalizeFirstLetter(confirmNeighbourhood)
+  //   console.log('neighbourhoodLowerCaps:', neighbourhoodLowerCaps)
+
+  //   const top5AllData = getTop5Trees[0].data.facet_groups[0].facets.slice(0, 5)
+  //   // console.log("getTreesTop5", top5)
+  //   const top5Array = top5AllData.map(treeName => treeName.name)
+  //   // console.log('top5Array:', top5Array)
+  //   const top5ArrayLowerCaps = top5Array.map(item => this.capitalizeFirstLetter(item))
+  //   console.log('top5ArrayLowerCaps:', top5ArrayLowerCaps)
+
+  //   const addPlusSigns = top5Array.map(treeName => treeName.replaceAll(' ', '+'))
+  //   console.log('addPlusSigns2:', addPlusSigns)
+    
+  //   // ---- Formulate URLs for the next 5 requests ---- //
+  //   const API_URL_NEIGHBOURHOOD_DATE_NAME = BASE_URL + DATASET + FACET_COMMON_NAME + FACET_NEIGHBOURHOOD + FACET_DATE_PLANTED
+  //                                         + REFINE_NEIGHBOURHOOD + NEIGHBOURHOOD + REFINE_COMMON_NAME
+    
+  //   const first = API_URL_NEIGHBOURHOOD_DATE_NAME + addPlusSigns[0]
+  //   // console.log('first:', first)
+  //   const second = API_URL_NEIGHBOURHOOD_DATE_NAME + addPlusSigns[1]
+  //   // console.log('second:', second)
+  //   const third = API_URL_NEIGHBOURHOOD_DATE_NAME + addPlusSigns[2]
+  //   // console.log('third:', third)
+  //   const fourth = API_URL_NEIGHBOURHOOD_DATE_NAME + addPlusSigns[3]
+  //   // console.log('fourth:', fourth)
+  //   const fifth = API_URL_NEIGHBOURHOOD_DATE_NAME + addPlusSigns[4]
+  //   // console.log('fifth:', fifth)
+
+  //   const firstTree = await axios.get(first)   // removed await 
+  //   console.log('firstTree:', firstTree)
+  //   const secondTree = await axios.get(second)
+  //   console.log('secondTree:', secondTree)
+  //   const thirdTree = await axios.get(third)
+  //   console.log('thirdTree:', thirdTree)
+  //   const fourthTree = await axios.get(fourth)
+  //   console.log('fourthTree:', fourthTree)
+  //   const fifthTree = await axios.get(fifth)
+  //   console.log('fifthTree:', fifthTree)
+
+  //   const totalCounts = [firstTree.data.nhits, secondTree.data.nhits, thirdTree.data.nhits,
+  //                        fourthTree.data.nhits, fifthTree.data.nhits]
+  //   console.log('Total Counts:', totalCounts)
+
+  //   // Years 
+  //   const firstTreeYears = firstTree.data.facet_groups[2].facets.map((year) => year.name)
+  //   console.log('firstTreeYears:', firstTreeYears)
+  //   const secondTreeYears = firstTree.data.facet_groups[2].facets.map((year) => year.name)
+  //   console.log('secondTreeYears:', secondTreeYears)
+  //   const thirdTreeYears = thirdTree.data.facet_groups[2].facets.map((year) => year.name)
+  //   console.log('thirdTreeYears:', thirdTreeYears)
+  //   const fourthTreeYears = fourthTree.data.facet_groups[2].facets.map((year) => year.name)
+  //   console.log('fourthTreeYears:', fourthTreeYears)
+  //   const fifthTreeYears = fifthTree.data.facet_groups[2].facets.map((year) => year.name)
+  //   console.log('fifthTreeYears:', fifthTreeYears)
+
+  //   // Count 
+  //   const firstTreeCount = firstTree.data.facet_groups[2].facets.map((count) => count.count)
+  //   console.log('firstTreeCount:', firstTreeCount)
+  //   const secondTreeCount = firstTree.data.facet_groups[2].facets.map((count) => count.count)
+  //   console.log('secondTreeCount:', secondTreeCount)
+  //   const thirdTreeCount = thirdTree.data.facet_groups[2].facets.map((count) => count.count)
+  //   console.log('thirdTreeCount:', thirdTreeCount)
+  //   const fourthTreeCount = fourthTree.data.facet_groups[2].facets.map((count) => count.count)
+  //   console.log('fourthTreeCount:', fourthTreeCount)
+  //   const fifthTreeCount = fifthTree.data.facet_groups[2].facets.map((count) => count.count)
+  //   console.log('fifthTreeCount:', fifthTreeCount)
+
+  //   this.setState({
+  //     // neighbourhood: confirmNeighbourhood,  // Goes to Header 
+  //     neighbourhoodLowerCaps: neighbourhoodLowerCaps,
+  //     top5AllData: top5AllData,      
+  //     // top5Array: top5Array,
+  //     top5ArrayLowerCaps: top5ArrayLowerCaps,                 // Graph Labels
+  //     totalCounts: totalCounts,
+  //     firstTreeYears: firstTreeYears,
+  //     secondTreeYears: secondTreeYears,
+  //     thirdTreeYears: thirdTreeYears,
+  //     fourthTreeYears: fourthTreeYears,
+  //     fifthTreeYears: fifthTreeYears,
+  //     firstTreeCount: firstTreeCount,
+  //     secondTreeCount: secondTreeCount,
+  //     thirdTreeCount: thirdTreeCount,
+  //     fourthTreeCount: fourthTreeCount,
+  //     fifthTreeCount: fifthTreeCount
+  //   })
+    
+  // }
+
+  // componentDidUpdate() {
+  // }
+
+  capitalizeFirstLetter(sentence) { const words = sentence.split(" ");
     const caps = words.map(word => word.charAt(0).toUpperCase() + word.substr(1).toLowerCase())
     const newSentence = caps.join(" ");
     return newSentence
   }
   
-  
-
   getTreesTop() {
     // ---- Select Neighbourhood (insert into URL string) ---- //
     // ---- Get Top 5 Trees planted in this Neighbourhood ---- //
@@ -255,57 +228,47 @@ class Dashboard extends Component {
     
   }
 
-  getTreesDetails() {
-    axios
-      .get()
-      .then((response) => {
-        console.log("THIS COMES FROM STATE function 1", this.state.top5)
-      })
-      // .catch(err =>{console.log(err)})
+  // getTreesDetails() {
+  //   axios
+  //     .get()
+  //     .then((response) => {
+  //       console.log("THIS COMES FROM STATE function 1", this.state.top5)
+  //     })
+  //     // .catch(err =>{console.log(err)})
 
 
-        // Get the Record for each: Trees planted / year and geom for each tree
+  //       // Get the Record for each: Trees planted / year and geom for each tree
       
-      // console.log("Neighbourhood --> ", response.data.parameters.refine.neighbourhood_name)         // console.log("Neighbourhood --> ", response.data.facet_groups[1].facets[0].name)
-      // console.log("Trees --> ", response.data.records.map((record) => record.fields))
-      // console.log("Number of Unique Tree Results returned (nhits) -->", response.data.nhits)
-      // console.log("Common Names w/ Count of each -->", response.data.facet_groups[0].facets)
-      // console.log("Number of Common Names -->", response.data.facet_groups[0].facets.length)   
+  //     // console.log("Neighbourhood --> ", response.data.parameters.refine.neighbourhood_name)         // console.log("Neighbourhood --> ", response.data.facet_groups[1].facets[0].name)
+  //     // console.log("Trees --> ", response.data.records.map((record) => record.fields))
+  //     // console.log("Number of Unique Tree Results returned (nhits) -->", response.data.nhits)
+  //     // console.log("Common Names w/ Count of each -->", response.data.facet_groups[0].facets)
+  //     // console.log("Number of Common Names -->", response.data.facet_groups[0].facets.length)   
       
-      // const records = response.data.records.map((record) => record.fields)
-      // const recordsWithGeom = records.filter(obj => obj.hasOwnProperty("geom"))
-      // const recordsNoGeom = records.filter(x => !recordsWithGeom.includes(x))
-      // const recordsWithNoGeom = records.filter(obj => !obj.hasOwnProperty("geom"))
+  //     // const records = response.data.records.map((record) => record.fields)
+  //     // const recordsWithGeom = records.filter(obj => obj.hasOwnProperty("geom"))
+  //     // const recordsNoGeom = records.filter(x => !recordsWithGeom.includes(x))
+  //     // const recordsWithNoGeom = records.filter(obj => !obj.hasOwnProperty("geom"))
 
-      // this.setState({
-      //   response: response.data,
-      //   // neighbourhood: response.data.parameters.refine.neighbourhood_name,
-      //   // trees: response.data.records.map((record) => record.fields),
-      //   // treeCount: response.data.nhits,
-      //   // allCommonNamesWithTotals: response.data.facet_groups[0].facets,
-      //   // top5CommonNames: response.data.facet_groups[0].facets.slice(0, 5),
-      //   // numberOfCommonNames: response.data.facet_groups[0].facets.length
+  //     // this.setState({
+  //     //   response: response.data,
+  //     //   // neighbourhood: response.data.parameters.refine.neighbourhood_name,
+  //     //   // trees: response.data.records.map((record) => record.fields),
+  //     //   // treeCount: response.data.nhits,
+  //     //   // allCommonNamesWithTotals: response.data.facet_groups[0].facets,
+  //     //   // top5CommonNames: response.data.facet_groups[0].facets.slice(0, 5),
+  //     //   // numberOfCommonNames: response.data.facet_groups[0].facets.length
 
-      //   records: records,
-      //   recordsWithGeom: recordsWithGeom,
-      //   recordsNoGeom: recordsNoGeom,
-      //   recordsWithNoGeom: recordsWithNoGeom
-      // })
+  //     //   records: records,
+  //     //   recordsWithGeom: recordsWithGeom,
+  //     //   recordsNoGeom: recordsNoGeom,
+  //     //   recordsWithNoGeom: recordsWithNoGeom
+  //     // })
     
     
-  }
+  // }
 
   render() {
-
-    // console.log("Dashboard API Response Response --->", this.state.response)
-    // console.log("Dashboard State --->", this.state)
-    // console.log("Dashboard API Response Records --->", this.state.records)
-    // console.log("Dashboard API Response WITH GEOM--->", this.state.recordsWithGeom)
-    // console.log("Dashboard API Response NO GEOM --->", this.state.recordsNoGeom)
-    // console.log("Dashboard API Response --->", this.state.recordsWithNoGeom)
-    
-    console.log("---> xDataTest", this.formatGraphData().xDataYears)
-    console.log("---> yDataTest", this.formatGraphData().yDataCount)
 
     return (
       <section className="dashboard">
@@ -313,13 +276,7 @@ class Dashboard extends Component {
           neighbourhood={this.state.neighbourhoodLowerCaps}
           capitalizeFirstLetter={this.capitalizeFirstLetter}
         />
-        <GraphMain
-          neighbourhood={this.state.neighbourhoodLowerCaps}  
-          top5AllData={this.state.top5AllData}
-          labelsTest={this.state.top5ArrayLowerCaps}
-          xDataTest={this.formatGraphData().xDataYears}
-          yDataTest={this.formatGraphData().yDataCount}
-          capitalizeFirstLetter={this.capitalizeFirstLetter}
+        <Chart
         />
         <div className="dashboard__instruments">
           <Map
