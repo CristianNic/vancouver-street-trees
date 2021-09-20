@@ -1,6 +1,6 @@
 // Source: https://plotly.com/javascript/line-charts/
 
-export function LabelledLinesAnnotations(xData, yData) {
+export function LabelledLinesAnnotations(xData, yData, labels) {
 	var colors = [
 		"rgba(67,67,67,1)",
 		"rgba(115,115,115,1)",
@@ -10,10 +10,9 @@ export function LabelledLinesAnnotations(xData, yData) {
 
 	var lineSize = [2, 2, 4, 2];
 
-	var labels = ["Television", "Newspaper", "Internet", "Radio"];
-
 	var data = [];
 
+	// Data
 	for (var i = 0; i < xData.length; i++) {
 		var result = {
 			x: xData[i],
@@ -35,13 +34,14 @@ export function LabelledLinesAnnotations(xData, yData) {
 				size: 12,
 			},
 		};
-		data.push(result, result2);
+    data.push(result, result2);
+		// console.log("Data - after 1st for loop", data);
 	}
 
 	var layout = {
 		showlegend: false,
 		height: 600,
-		width: 600,
+		width: 900,
 		xaxis: {
 			showline: true,
 			showgrid: false,
@@ -106,14 +106,15 @@ export function LabelledLinesAnnotations(xData, yData) {
 		],
 	};
 
-	for (var i = 0; i < xData.length; i++) {
-		var result = {
+	// Annotations
+	for (var x = 0; x < xData.length; x++) {
+		var Result3 = {
 			xref: "paper",
 			x: 0.05,
-			y: yData[i][0],
+			y: yData[x][0],
 			xanchor: "right",
 			yanchor: "middle",
-			text: labels[i] + " " + yData[i][0] + "%",
+			text: labels[x] + " " + yData[x][0] + "%",
 			showarrow: false,
 			font: {
 				family: "Arial",
@@ -121,13 +122,13 @@ export function LabelledLinesAnnotations(xData, yData) {
 				color: "black",
 			},
 		};
-		var result2 = {
+		var Result4 = {
 			xref: "paper",
 			x: 0.95,
-			y: yData[i][11],
+			y: yData[x][11],
 			xanchor: "left",
 			yanchor: "middle",
-			text: yData[i][11] + "%",
+			text: yData[x][11] + "%",
 			font: {
 				family: "Arial",
 				size: 16,
@@ -136,7 +137,7 @@ export function LabelledLinesAnnotations(xData, yData) {
 			showarrow: false,
 		};
 
-		layout.annotations.push(result, result2);
+		layout.annotations.push(Result3, Result4);
 	}
 
 	return { data, layout };
