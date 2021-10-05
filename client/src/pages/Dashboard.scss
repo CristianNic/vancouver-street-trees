@@ -1,18 +1,21 @@
 .dashboard {
-	display: flex;
-	flex-direction: column;
-	// text-align: center;
-	align-items: center;
-	// flex-wrap: wrap;
-	background-color: lightgray;
-	// margin: 0 auto;
-  // border: dashed 5px blue;
-  // add dashboard__container for response design
-  
+  background-color: rgb(211, 211, 211);
 
-	&__instruments {
+  &__container {
+    display: flex;
+    flex-direction: column;
+    // // text-align: center;
+    // align-items: center;
+    // // flex-wrap: wrap;
+    // width: 1024px; // smaller laptop
+    width: 1200px; // 1440px laptop large 
+    margin: 0 auto;
+    // // border: dashed 5px blue;
+    // // add dashboard__container for response design
+  }
+	&__main {
 		display: flex;
-		flex-direction: row;
+		// flex-direction: row;
 		justify-content: space-between;
 	}
 }
