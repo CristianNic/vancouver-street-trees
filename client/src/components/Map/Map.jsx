@@ -9,10 +9,9 @@ class Map extends Component {
 
     return (
       <section className="map">
-        <div>
+        {/* <div>
           <h1 className="map__name">Map</h1>
-        </div>
-        
+        </div> */}
         <MapContainer center={[49.2780, -123.1153]} zoom={12}>
             {/* <TileLayer    
               // Use OpenStreetMap tiles if Mapbox account was not created. See utils/MapboxToken-Sample.js
