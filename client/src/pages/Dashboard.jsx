@@ -2,9 +2,11 @@ import React, { Component } from "react";
 import axios from 'axios';
 import Header from "../components/Header/Header";
 import Map from "../components/Map/Map";
-import Graphs from "../components/Graphs/Graphs";
+// import Graphs from "../components/Graphs/Graphs";
 import Footer from "../components/Footer/Footer";
+// import Chart from "../components/Chart/Chart";
 import Chart from "../components/Chart/Chart";
+// import Highcharts from 'highcharts'
 
 // 1st Neighbourhood: MOUNT PLEASANT 6,500+ trees
 // API --> (neighbourhood, Geom,)(Genus, Species, Common)(diameter when planted, year)
@@ -19,7 +21,7 @@ import Chart from "../components/Chart/Chart";
 // const API_URL = base_url + dataset + rows + facets
 
 const BASE_URL = "https://opendata.vancouver.ca/api/records/1.0/search/"
-const DATASET = "?dataset=street-trees&q=&rows=500"
+const DATASET = "?dataset=street-trees&q=&rows=1000"
 const NEIGHBOURHOOD = "MOUNT+PLEASANT"
 const FACET_COMMON_NAME = "&facet=common_name"
 const REFINE_COMMON_NAME = "&refine.common_name="
@@ -49,248 +51,251 @@ const API_URL_NEIGHBOURHOOD = BASE_URL + DATASET + FACET_COMMON_NAME + REFINE_NE
 //   + "&facet=common_name&facet=neighbourhood_name&facet=date_planted&refine.neighbourhood_name="
 //   + NEIGHBOURHOOD + "&refine.common_name=" + TREE_COMMON_NAME
 
-// .get(`${URL_date}`)
-// .get(`${top1_rows100}`)
-// .get(`${top2nd}`)
-// .get(`${top2ndTest}`)
-
-
 class Dashboard extends Component {
 
   state = {
-    // response: [],
-    // neighbourhood: '',
-    neighbourhoodLowerCaps: [],
-    // trees: [],
-    // treeCount: [],
+    neighbourhood: '',
+    top5Trees: [],
     // allCommonNamesWithTotals: [],
     // top5CommonNames: [],
     // numberOfCommonNames: [],
-    // records: [],
     // recordsWithGeom: [],
     // recordsNoGeom: [],
-    top5AllData: [],
-    // top5Array: [],
-    top5ArrayLowerCaps: [],             // Graph Labels
+    top5CommonNames: [],             
     totalCounts: [],
-    firstTreeYears: [],
-    secondTreeYears: [],
-    thirdTreeYears: [],
-    fourthTreeYears: [],
-    fifthTreeYears: [],
-    firstTreeCount: [],
-    secondTreeCount: [],
-    thirdTreeCount: [],
-    fourthTreeCount: [],
-    fifthTreeCount: []
+    series: []
   }
 
-  // async componentDidMount() {
-  //   // ---- Make first request ---- //
-  //   const getTop5Trees = await Promise.all([
-  //     axios.get(`${API_URL_NEIGHBOURHOOD}`)])
+  async componentDidMount() {
+    // ---- Async function because only after the first request (longest) can we know which are the top 5 trees to investigate ---- //
+    const getAllNeighbourhoodTrees = await Promise.all([
+    axios.get(`${API_URL_NEIGHBOURHOOD}`)])
+    console.log('Dashboard --> :', getAllNeighbourhoodTrees)
     
-  // }
+    const confirmNeighbourhood = getAllNeighbourhoodTrees[0].data.facet_groups[1].facets[0].name
+    const confirmNeighbourhoodLowerCaps = this.capitalizeFirstLetter(confirmNeighbourhood)
+    // console.log('neighbourhoodLowerCaps:', confirmNeighbourhoodLowerCaps)
 
-  // async componentDidMount() {
-  //   // ---- Make first request ---- //
-  //   const getTop5Trees = await Promise.all([
-  //     axios.get(`${API_URL_NEIGHBOURHOOD}`)])
+    // ------ Top 5 Trees by Common Names ------- //
+    const top5TreesByCommonNames = getAllNeighbourhoodTrees[0].data.facet_groups[0].facets.slice(0, 5)
+    // console.log("top5TreesByCommonNames", top5TreesByCommonNames)
+
+    const top5TreeNames = top5TreesByCommonNames.map(treeName => treeName.name)
+    const top5TreeNamesLowerCaps = top5TreeNames.map(item => this.capitalizeFirstLetter(item))
+    // console.log('top5TreeNamesLowerCaps:', top5TreeNamesLowerCaps)
+
+    // ------ Numbers of trees planted of each type in the top 5 ------- //
+    const top5TreesByCount = top5TreesByCommonNames.map(count => count.count)
+    // console.log('top5TreesByCount:', top5TreesByCount)
+
+    // ------  Find the number per year of each of the 5 top trees planted in a neighbourhood.                   ------- // 
+    // ------  The Tree Dataset is 147,173 records. Neighbourhood's can range from 11,650 - 2,606 trees planted. ------- //
+    // ------  First narrowed it down by neighbourhood and obtained top 5 and totals of each planted             ------- //
+    // ------  between 1989 - 2019. Next query the API asking how many trees were planted in each year for a     ------- //
+    // ------  given type of tree (by common name).                                                              ------- //
+
+    // ------ Find the number of trees planted each year for each of the top 5  ------- //
+    // ------ ( & get all trees for each top 5 for the map geom )               ------- //
     
-  //   const AllTheData = getTop5Trees 
-  //   console.log('----> AllTheData <--- :', AllTheData)
+    // ------ Formulate API Neighbourhood Calls ------- //
+    // ------ Format Tree Common Name for API format ------- //
+    const FORMATTED_COMMON_NAME = top5TreeNames.map(treeName => treeName.replaceAll(' ', '+'))
+    // console.log('FORMATTED_COMMON_NAME:', FORMATTED_COMMON_NAME)
     
-  //   const confirmNeighbourhood = getTop5Trees[0].data.facet_groups[1].facets[0].name
-  //   console.log('confirmNeighbourhood:', confirmNeighbourhood)
-  //   const neighbourhoodLowerCaps = this.capitalizeFirstLetter(confirmNeighbourhood)
-  //   console.log('neighbourhoodLowerCaps:', neighbourhoodLowerCaps)
-
-  //   const top5AllData = getTop5Trees[0].data.facet_groups[0].facets.slice(0, 5)
-  //   // console.log("getTreesTop5", top5)
-  //   const top5Array = top5AllData.map(treeName => treeName.name)
-  //   // console.log('top5Array:', top5Array)
-  //   const top5ArrayLowerCaps = top5Array.map(item => this.capitalizeFirstLetter(item))
-  //   console.log('top5ArrayLowerCaps:', top5ArrayLowerCaps)
-
-  //   const addPlusSigns = top5Array.map(treeName => treeName.replaceAll(' ', '+'))
-  //   console.log('addPlusSigns2:', addPlusSigns)
+    // ---- Formulate URLs for the next 5 requests ---- //
+    const API_URL_NEIGHBOURHOOD_DATE_PLANTED_REFINE_COMMON_NAME =
+      BASE_URL + DATASET + FACET_COMMON_NAME + FACET_NEIGHBOURHOOD + FACET_DATE_PLANTED
+      + REFINE_NEIGHBOURHOOD + NEIGHBOURHOOD + REFINE_COMMON_NAME
     
-  //   // ---- Formulate URLs for the next 5 requests ---- //
-  //   const API_URL_NEIGHBOURHOOD_DATE_NAME = BASE_URL + DATASET + FACET_COMMON_NAME + FACET_NEIGHBOURHOOD + FACET_DATE_PLANTED
-  //                                         + REFINE_NEIGHBOURHOOD + NEIGHBOURHOOD + REFINE_COMMON_NAME
+    const firstReq = API_URL_NEIGHBOURHOOD_DATE_PLANTED_REFINE_COMMON_NAME + FORMATTED_COMMON_NAME[0]
+    const secondReq = API_URL_NEIGHBOURHOOD_DATE_PLANTED_REFINE_COMMON_NAME + FORMATTED_COMMON_NAME[1]
+    const thirdReq = API_URL_NEIGHBOURHOOD_DATE_PLANTED_REFINE_COMMON_NAME + FORMATTED_COMMON_NAME[2]
+    const fourthReq = API_URL_NEIGHBOURHOOD_DATE_PLANTED_REFINE_COMMON_NAME + FORMATTED_COMMON_NAME[3]
+    const fifthReq = API_URL_NEIGHBOURHOOD_DATE_PLANTED_REFINE_COMMON_NAME + FORMATTED_COMMON_NAME[4]
+
+    const tree1 = await axios.get(firstReq)   // removed await 
+    // console.log('tree1:', tree1)
+    const tree1Years = tree1.data.facet_groups[2].facets.map((year) => year.name)
+    // console.log('tree1Years:', tree1Years)
+    const tree1Count = tree1.data.facet_groups[2].facets.map((count) => count.count)
+    // console.log('tree1Count:', tree1Count)
+
+    const tree2 = await axios.get(secondReq)
+    // console.log('tree2:', tree2)
+    const tree2Years = tree2.data.facet_groups[2].facets.map((year) => year.name)
+    // console.log('tree2Years:', tree2Years)
+    const tree2Count = tree2.data.facet_groups[2].facets.map((count) => count.count)
+    // console.log('tree2Count:', tree2Count)
+
+    const tree3 = await axios.get(thirdReq)
+    // console.log('tree3:', tree3)
+    const tree3Years = tree3.data.facet_groups[2].facets.map((year) => year.name)
+    // console.log('tree3Years:', tree3Years)
+    const tree3Count = tree3.data.facet_groups[2].facets.map((count) => count.count)
+    // console.log('tree3Count:', tree3Count)
     
-  //   const first = API_URL_NEIGHBOURHOOD_DATE_NAME + addPlusSigns[0]
-  //   // console.log('first:', first)
-  //   const second = API_URL_NEIGHBOURHOOD_DATE_NAME + addPlusSigns[1]
-  //   // console.log('second:', second)
-  //   const third = API_URL_NEIGHBOURHOOD_DATE_NAME + addPlusSigns[2]
-  //   // console.log('third:', third)
-  //   const fourth = API_URL_NEIGHBOURHOOD_DATE_NAME + addPlusSigns[3]
-  //   // console.log('fourth:', fourth)
-  //   const fifth = API_URL_NEIGHBOURHOOD_DATE_NAME + addPlusSigns[4]
-  //   // console.log('fifth:', fifth)
+    const tree4 = await axios.get(fourthReq)
+    // console.log('tree4:', tree4)
+    const tree4Years = tree4.data.facet_groups[2].facets.map((year) => year.name)
+    // console.log('tree4Years:', tree4Years)
+    const tree4Count = tree4.data.facet_groups[2].facets.map((count) => count.count)
+    // console.log('tree4Count:', tree4Count)
 
-  //   const firstTree = await axios.get(first)   // removed await 
-  //   console.log('firstTree:', firstTree)
-  //   const secondTree = await axios.get(second)
-  //   console.log('secondTree:', secondTree)
-  //   const thirdTree = await axios.get(third)
-  //   console.log('thirdTree:', thirdTree)
-  //   const fourthTree = await axios.get(fourth)
-  //   console.log('fourthTree:', fourthTree)
-  //   const fifthTree = await axios.get(fifth)
-  //   console.log('fifthTree:', fifthTree)
-
-  //   const totalCounts = [firstTree.data.nhits, secondTree.data.nhits, thirdTree.data.nhits,
-  //                        fourthTree.data.nhits, fifthTree.data.nhits]
-  //   console.log('Total Counts:', totalCounts)
-
-  //   // Years 
-  //   const firstTreeYears = firstTree.data.facet_groups[2].facets.map((year) => year.name)
-  //   console.log('firstTreeYears:', firstTreeYears)
-  //   const secondTreeYears = firstTree.data.facet_groups[2].facets.map((year) => year.name)
-  //   console.log('secondTreeYears:', secondTreeYears)
-  //   const thirdTreeYears = thirdTree.data.facet_groups[2].facets.map((year) => year.name)
-  //   console.log('thirdTreeYears:', thirdTreeYears)
-  //   const fourthTreeYears = fourthTree.data.facet_groups[2].facets.map((year) => year.name)
-  //   console.log('fourthTreeYears:', fourthTreeYears)
-  //   const fifthTreeYears = fifthTree.data.facet_groups[2].facets.map((year) => year.name)
-  //   console.log('fifthTreeYears:', fifthTreeYears)
-
-  //   // Count 
-  //   const firstTreeCount = firstTree.data.facet_groups[2].facets.map((count) => count.count)
-  //   console.log('firstTreeCount:', firstTreeCount)
-  //   const secondTreeCount = firstTree.data.facet_groups[2].facets.map((count) => count.count)
-  //   console.log('secondTreeCount:', secondTreeCount)
-  //   const thirdTreeCount = thirdTree.data.facet_groups[2].facets.map((count) => count.count)
-  //   console.log('thirdTreeCount:', thirdTreeCount)
-  //   const fourthTreeCount = fourthTree.data.facet_groups[2].facets.map((count) => count.count)
-  //   console.log('fourthTreeCount:', fourthTreeCount)
-  //   const fifthTreeCount = fifthTree.data.facet_groups[2].facets.map((count) => count.count)
-  //   console.log('fifthTreeCount:', fifthTreeCount)
-
-  //   this.setState({
-  //     // neighbourhood: confirmNeighbourhood,  // Goes to Header 
-  //     neighbourhoodLowerCaps: neighbourhoodLowerCaps,
-  //     top5AllData: top5AllData,      
-  //     // top5Array: top5Array,
-  //     top5ArrayLowerCaps: top5ArrayLowerCaps,                 // Graph Labels
-  //     totalCounts: totalCounts,
-  //     firstTreeYears: firstTreeYears,
-  //     secondTreeYears: secondTreeYears,
-  //     thirdTreeYears: thirdTreeYears,
-  //     fourthTreeYears: fourthTreeYears,
-  //     fifthTreeYears: fifthTreeYears,
-  //     firstTreeCount: firstTreeCount,
-  //     secondTreeCount: secondTreeCount,
-  //     thirdTreeCount: thirdTreeCount,
-  //     fourthTreeCount: fourthTreeCount,
-  //     fifthTreeCount: fifthTreeCount
-  //   })
+    const tree5 = await axios.get(fifthReq)
+    // console.log('tree5:', tree5)
+    const tree5Years = tree5.data.facet_groups[2].facets.map((year) => year.name)
+    // console.log('tree5Years:', tree5Years)
+    const tree5Count = tree5.data.facet_groups[2].facets.map((count) => count.count)
+    // console.log('tree5Count:', tree5Count)
+  
+    const yearlyCount = (years, count) => {
+      const yearlyCountArr = [];
+      for (let i = 0; i < years.length; i++) {
+        const output = [years[i], count[i]];
+        yearlyCountArr.push(output);
+      }
+      return yearlyCountArr
+    }
     
-  // }
+    const top5Trees = {
+      neighbourhood: confirmNeighbourhoodLowerCaps,
+      tree1:
+        {name: top5TreeNamesLowerCaps[0], totalCount: top5TreesByCount[0], yearlyCount: yearlyCount(tree1Years, tree1Count)},
+      tree2:
+        {name: top5TreeNamesLowerCaps[1], totalCount: top5TreesByCount[1], yearlyCount: yearlyCount(tree2Years, tree2Count)},
+      tree3:
+        {name: top5TreeNamesLowerCaps[2], totalCount: top5TreesByCount[2], yearlyCount: yearlyCount(tree3Years, tree3Count)},
+      tree4:
+        {name: top5TreeNamesLowerCaps[3], totalCount: top5TreesByCount[3], yearlyCount: yearlyCount(tree4Years, tree4Count)},
+      tree5:
+        {name: top5TreeNamesLowerCaps[4], totalCount: top5TreesByCount[4], yearlyCount: yearlyCount(tree5Years, tree5Count)}
+    }
+    // console.log('Dashboard --> top5Trees:', top5Trees)
 
-  // componentDidUpdate() {
-  // }
+    const series = [
+      {
+        name: top5Trees.tree1.name,
+        y: top5Trees.tree1.totalCount,
+        drilldown: true
+      },
+      {
+        name: top5Trees.tree2.name,
+        y: top5Trees.tree2.totalCount,
+        drilldown: true
+      },
+      {
+        name: top5Trees.tree3.name,
+        y: top5Trees.tree3.totalCount,
+        drilldown: true
+      },
+      {
+        name: top5Trees.tree4.name,
+        y: top5Trees.tree4.totalCount,
+        drilldown: true
+      },
+      {
+        name: top5Trees.tree5.name,
+        y: top5Trees.tree5.totalCount,
+        drilldown: true
+      },
+    ]
+    
+    const drilldownSeries = [
+      {
+        name: top5Trees.tree1.name,
+        id: top5Trees.tree1.name,
+        data: [
+          [
+            "1990",
+            50
+          ],
+          [
+            "1992",
+            2
+          ],
+          [
+            "1993",
+            1
+          ],
+        ]
+      }
+    ]
+       
+    // console.log('=)=)=) series:', series)
+      
+    this.setState({
+      neighbourhood: confirmNeighbourhoodLowerCaps,
+      top5Trees: top5Trees,
+      series: series,
+      drilldownSeries: drilldownSeries
+    })
+    
+  }
 
   capitalizeFirstLetter(sentence) { const words = sentence.split(" ");
     const caps = words.map(word => word.charAt(0).toUpperCase() + word.substr(1).toLowerCase())
     const newSentence = caps.join(" ");
     return newSentence
   }
-  
-  getTreesTop() {
-    // ---- Select Neighbourhood (insert into URL string) ---- //
-    // ---- Get Top 5 Trees planted in this Neighbourhood ---- //
-    axios
-      .get(`${API_URL_NEIGHBOURHOOD}`)
-      .then((response) => {
-        console.log("Response", response)
-        // Select Neighbourhood (insert into URL string)
-        // ---- Get Top 5 Trees planted in this Neighbourhood ---- //
-        const top5 = response.data.facet_groups[0].facets.slice(0, 5)
-        console.log('top5:', top5)
-        const top5Array = top5.map(treeName => treeName.name)
-        console.log('top5Array:', top5Array)
-        this.setState({
-          top5: top5,
-          top5Array: top5Array
-        })
-        return top5
-      })
-      .catch(err => { console.log(err) })
-  
-    console.log("getTreesTop5 Still in this function")
-    const five = 5
-    console.log('five:', five)
-    console.log('TOP% FROM FN', this.state.top5)
-    // console.log('Just the words', top5)
-    
-  }
 
-  // getTreesDetails() {
+  // getTreesTop() {
+  //   // ---- Select Neighbourhood (insert into URL string) ---- //
+  //   // ---- Get Top 5 Trees planted in this Neighbourhood ---- //
   //   axios
-  //     .get()
+  //     .get(`${API_URL_NEIGHBOURHOOD}`)
   //     .then((response) => {
-  //       console.log("THIS COMES FROM STATE function 1", this.state.top5)
+  //       console.log("Response", response)
+  //       // Select Neighbourhood (insert into URL string)
+  //       // ---- Get Top 5 Trees planted in this Neighbourhood ---- //
+  //       const top5 = response.data.facet_groups[0].facets.slice(0, 5)
+  //       console.log('top5:', top5)
+  //       const top5Array = top5.map(treeName => treeName.name)
+  //       console.log('top5Array:', top5Array)
+  //       // this.setState({
+  //       //   top5: top5,
+  //       //   top5Array: top5Array
+  //       // })
+  //       return top5
   //     })
-  //     // .catch(err =>{console.log(err)})
-
-
-  //       // Get the Record for each: Trees planted / year and geom for each tree
-      
-  //     // console.log("Neighbourhood --> ", response.data.parameters.refine.neighbourhood_name)         // console.log("Neighbourhood --> ", response.data.facet_groups[1].facets[0].name)
-  //     // console.log("Trees --> ", response.data.records.map((record) => record.fields))
-  //     // console.log("Number of Unique Tree Results returned (nhits) -->", response.data.nhits)
-  //     // console.log("Common Names w/ Count of each -->", response.data.facet_groups[0].facets)
-  //     // console.log("Number of Common Names -->", response.data.facet_groups[0].facets.length)   
-      
-  //     // const records = response.data.records.map((record) => record.fields)
-  //     // const recordsWithGeom = records.filter(obj => obj.hasOwnProperty("geom"))
-  //     // const recordsNoGeom = records.filter(x => !recordsWithGeom.includes(x))
-  //     // const recordsWithNoGeom = records.filter(obj => !obj.hasOwnProperty("geom"))
-
-  //     // this.setState({
-  //     //   response: response.data,
-  //     //   // neighbourhood: response.data.parameters.refine.neighbourhood_name,
-  //     //   // trees: response.data.records.map((record) => record.fields),
-  //     //   // treeCount: response.data.nhits,
-  //     //   // allCommonNamesWithTotals: response.data.facet_groups[0].facets,
-  //     //   // top5CommonNames: response.data.facet_groups[0].facets.slice(0, 5),
-  //     //   // numberOfCommonNames: response.data.facet_groups[0].facets.length
-
-  //     //   records: records,
-  //     //   recordsWithGeom: recordsWithGeom,
-  //     //   recordsNoGeom: recordsNoGeom,
-  //     //   recordsWithNoGeom: recordsWithNoGeom
-  //     // })
-    
+  //     .catch(err => { console.log(err) })
+  
+  //   console.log("getTreesTop5 Still in this function")
+  //   const five = 5
+  //   console.log('five:', five)
+  //   console.log('TOP% FROM FN', this.state.top5)
+  //   // console.log('Just the words', top5)
     
   // }
 
   render() {
 
+    // console.log("Series in State", this.state.series)
     return (
       <section className="dashboard">
-        <Header
-          neighbourhood={this.state.neighbourhoodLowerCaps}
-          capitalizeFirstLetter={this.capitalizeFirstLetter}
-        />
-        <Chart
-        />
-        <div className="dashboard__instruments">
-          <Map
+        <div className="dashboard__container">
+          <Header
             neighbourhood={this.state.neighbourhood}
-            // ----- let the map parse out the geom & possibly reverse code locations ----- // 
-            // trees={this.state.trees}
-            // treeCount={this.state.treeCount}
-            // commonNamesWithEachTotal={this.state.allCommonNamesWithTotals}
-            // numberOfCommonNames={this.state.numberOfCommonNames}
+            // capitalizeFirstLetter={this.capitalizeFirstLetter}
           />
-          <Graphs/>
+          <div className="dashboard__main">
+            <Map
+              neighbourhood={this.state.neighbourhood}
+              // ----- let the map parse out the geom & possibly reverse code locations ----- // 
+              // trees={this.state.trees}
+              // treeCount={this.state.treeCount}
+              // commonNamesWithEachTotal={this.state.allCommonNamesWithTotals}
+              // numberOfCommonNames={this.state.numberOfCommonNames}
+            />
+            <Chart
+              top5Trees={this.state.top5Trees}
+              series={this.state.series}
+              drilldownSeries={this.state.drilldownSeries}
+              />
+            {/* <Graphs/> */}
+          </div>
+          <Footer />
         </div>
-        <Footer/>
-      </section>
+    </section>
     );
   }
 }
