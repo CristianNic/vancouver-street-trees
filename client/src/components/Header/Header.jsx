@@ -16,12 +16,11 @@ class Header extends Component {
         <div className="header__wrapper">
           <h1 className="header__title">City of Vancouver Trees</h1>
           <h1 className="header__neighbourhood">
-            Neighbourhood: <br/>
-            <span className="header__highlight-neighbourhood">
-               {/* {this.props.capitalizeFirstLetter(this.props.neighbourhoodLowerCaps)} */}
-               {this.props.neighbourhood}
-            </span>
-          </h1>
+             Neighbourhood:
+             <span className="header__highlight-neighbourhood"> 
+                 {this.props.neighbourhood}
+             </span>
+           </h1>
         </div>
       </header>
     )
@@ -29,3 +28,4 @@ class Header extends Component {
 }
 
 export default Header;
+
