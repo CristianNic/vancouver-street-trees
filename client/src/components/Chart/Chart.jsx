@@ -2,7 +2,7 @@
 // https://www.highcharts.com/docs/export-module/client-side-export?_ga=2.141122033.219977435.1633323403-1848022347.1631864256
 
 
-import React, { Component } from 'react'
+import React from 'react'
 import HighchartsReact from 'highcharts-react-official'
 import Highcharts from 'highcharts'
 // import High harts, { chart } from 'highcharts'
@@ -19,18 +19,35 @@ require('highcharts/modules/export-data')(Highcharts)
 // export default function Chart2(props) {
 export default function Chart2(props) {
 
-  console.log("Chart2 - top5Trees: ", props.top5Trees)
-  console.log("Chart2 - Series: ", props.series)
+  // console.log("Chart2 - top5Trees: ", props.top5Trees)
+  // console.log("Chart2 - top5Trees2: ", props.top5Trees2)
+  // // console.log("Chart2 - Series: ", props.series)
+  // // console.log("Chart - top5Trees3: ", props.top5Trees3)
 
-  const treeNames = props.series.map(name => name.name)
-  console.log('treeNames:', treeNames)
-  const treeNamesName = props.series.map(name => name.name)[0]
-  console.log('treeNamesName:', treeNamesName)
+  // //------------------- top5Trees3 -------------//
+  // console.log('==> Chart -->', props.top5Trees3.neighbourhood)
+  // console.log('==> Chart -- names -->', props.top5Trees3.names)
+  // console.log('==> Chart -- names -->', props.top5Trees3.totalCount)
+  // console.log('==> Chart -- names -->', props.top5Trees3.yearlyCount)
 
-  const totalCount = props.series.map(totalCount => totalCount.y)
-  console.log('totalCount:', totalCount)
-  const totalCountOne = props.series.map(totalCount => totalCount.y)[0]
-  console.log('totalCountOne:', totalCountOne)
+  //------------------- top5Trees2  { } -------------//
+  console.log('==> Chart -->', props.top5Trees2.neighbourhood)
+  console.log('==> Chart -- names!@#$@!#!#@$@! -->', props.top5Trees2.names)
+  console.log('==> Chart -- totalCount -->', props.top5Trees2.totalCount)
+  console.log('==> Chart -- yearlyCount -->', props.top5Trees2.yearlyCount)
+
+
+  // //------------------ Series Works ----------------//
+  // const treeNames = props.series.map(name => name.name)
+  // console.log('treeNames:', treeNames)
+  // const treeNamesName = props.series.map(name => name.name)[0]
+  // console.log('treeNamesName:', treeNamesName)
+
+  // const totalCount = props.series.map(totalCount => totalCount.y)
+  // console.log('totalCount:', totalCount)
+  // const totalCountOne = props.series.map(totalCount => totalCount.y)[0]
+  // console.log('totalCountOne:', totalCountOne)
+  // //------------------- Series ----------------//
 
   // const Tree1YearlyCount = props.top5Trees.tree1.yearlyCount // outputs []
   // const Tree1YearlyCount = props.top5Trees.tree1.map(Count => Count.yearlyCount)
@@ -100,9 +117,6 @@ export default function Chart2(props) {
         }
       }
     },
-    // exporting: {
-    //   showTable: false  // no needed --> Want .csv!!! 
-    // },
     title: {
       // text: "Top 5 Types of Trees Planted in " + props.top5Trees.neighbourhood
       text: "Top 5 Trees Planted in " + props.top5Trees.neighbourhood
@@ -130,8 +144,6 @@ export default function Chart2(props) {
       {
         name: "Trees",
         colorByPoint: true,
-        // data: props.series
-        
         data: [
           {
             name: props.series.map(name => name.name)[0],
@@ -159,6 +171,7 @@ export default function Chart2(props) {
             drilldown: true
           },
         ]
+
         // {
         //   name: "Red Maple",
         //   y: 264,
