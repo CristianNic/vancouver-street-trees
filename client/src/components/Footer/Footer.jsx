@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import iconEmail from '../../assets/icons-feather-1.5px/mail.svg';
-import iconGithub from '../../assets/icons-feather-1.5px/github.svg';
-import iconLinkedIn from '../../assets/icons-feather-1.5px/linkedin.svg';
+// import iconEmail from '../../assets/icons-feather-1.5px/mail.svg';
+// import iconGithub from '../../assets/icons-feather-1.5px/github.svg';
+// import iconLinkedIn from '../../assets/icons-feather-1.5px/linkedin.svg';
 
 const sourceUrl = "https://opendata.vancouver.ca/explore/dataset/street-trees/information/?disjunctive.species_name&disjunctive.common_name&disjunctive.height_range_id"
 
