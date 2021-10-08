@@ -56,14 +56,16 @@ class Dashboard extends Component {
   state = {
     neighbourhood: '',
     top5Trees: [],
+    top5Trees2: [],
+    top5Trees3: [],
+    series: []
     // allCommonNamesWithTotals: [],
     // top5CommonNames: [],
     // numberOfCommonNames: [],
     // recordsWithGeom: [],
     // recordsNoGeom: [],
-    top5CommonNames: [],             
-    totalCounts: [],
-    series: []
+    // top5CommonNames: [],             
+    // totalCounts: [],
   }
 
   async componentDidMount() {
@@ -71,21 +73,23 @@ class Dashboard extends Component {
     const getAllNeighbourhoodTrees = await Promise.all([
     axios.get(`${API_URL_NEIGHBOURHOOD}`)])
     console.log('Dashboard --> :', getAllNeighbourhoodTrees)
-    
-    const confirmNeighbourhood = getAllNeighbourhoodTrees[0].data.facet_groups[1].facets[0].name
-    const confirmNeighbourhoodLowerCaps = this.capitalizeFirstLetter(confirmNeighbourhood)
+    // Sleep for 20 seconds
+    // await new Promise(resolve => { setTimeout(resolve, 20000); });
+
+    const confirmNeighbourhood = await getAllNeighbourhoodTrees[0].data.facet_groups[1].facets[0].name
+    const confirmNeighbourhoodLowerCaps = await this.capitalizeFirstLetter(confirmNeighbourhood)
     // console.log('neighbourhoodLowerCaps:', confirmNeighbourhoodLowerCaps)
 
     // ------ Top 5 Trees by Common Names ------- //
-    const top5TreesByCommonNames = getAllNeighbourhoodTrees[0].data.facet_groups[0].facets.slice(0, 5)
+    const top5TreesByCommonNames = await getAllNeighbourhoodTrees[0].data.facet_groups[0].facets.slice(0, 5)
     // console.log("top5TreesByCommonNames", top5TreesByCommonNames)
 
-    const top5TreeNames = top5TreesByCommonNames.map(treeName => treeName.name)
-    const top5TreeNamesLowerCaps = top5TreeNames.map(item => this.capitalizeFirstLetter(item))
+    const top5TreeNames = await top5TreesByCommonNames.map(treeName => treeName.name)
+    const top5TreeNamesLowerCaps = await top5TreeNames.map(item => this.capitalizeFirstLetter(item))
     // console.log('top5TreeNamesLowerCaps:', top5TreeNamesLowerCaps)
 
     // ------ Numbers of trees planted of each type in the top 5 ------- //
-    const top5TreesByCount = top5TreesByCommonNames.map(count => count.count)
+    const top5TreesByCount = await top5TreesByCommonNames.map(count => count.count)
     // console.log('top5TreesByCount:', top5TreesByCount)
 
     // ------  Find the number per year of each of the 5 top trees planted in a neighbourhood.                   ------- // 
@@ -99,7 +103,7 @@ class Dashboard extends Component {
     
     // ------ Formulate API Neighbourhood Calls ------- //
     // ------ Format Tree Common Name for API format ------- //
-    const FORMATTED_COMMON_NAME = top5TreeNames.map(treeName => treeName.replaceAll(' ', '+'))
+    const FORMATTED_COMMON_NAME = await top5TreeNames.map(treeName => treeName.replaceAll(' ', '+'))
     // console.log('FORMATTED_COMMON_NAME:', FORMATTED_COMMON_NAME)
     
     // ---- Formulate URLs for the next 5 requests ---- //
@@ -115,37 +119,37 @@ class Dashboard extends Component {
 
     const tree1 = await axios.get(firstReq)   // removed await 
     // console.log('tree1:', tree1)
-    const tree1Years = tree1.data.facet_groups[2].facets.map((year) => year.name)
+    const tree1Years = await tree1.data.facet_groups[2].facets.map((year) => year.name)
     // console.log('tree1Years:', tree1Years)
-    const tree1Count = tree1.data.facet_groups[2].facets.map((count) => count.count)
+    const tree1Count = await tree1.data.facet_groups[2].facets.map((count) => count.count)
     // console.log('tree1Count:', tree1Count)
 
     const tree2 = await axios.get(secondReq)
     // console.log('tree2:', tree2)
-    const tree2Years = tree2.data.facet_groups[2].facets.map((year) => year.name)
+    const tree2Years = await tree2.data.facet_groups[2].facets.map((year) => year.name)
     // console.log('tree2Years:', tree2Years)
-    const tree2Count = tree2.data.facet_groups[2].facets.map((count) => count.count)
+    const tree2Count = await tree2.data.facet_groups[2].facets.map((count) => count.count)
     // console.log('tree2Count:', tree2Count)
 
     const tree3 = await axios.get(thirdReq)
     // console.log('tree3:', tree3)
-    const tree3Years = tree3.data.facet_groups[2].facets.map((year) => year.name)
+    const tree3Years = await tree3.data.facet_groups[2].facets.map((year) => year.name)
     // console.log('tree3Years:', tree3Years)
-    const tree3Count = tree3.data.facet_groups[2].facets.map((count) => count.count)
+    const tree3Count = await tree3.data.facet_groups[2].facets.map((count) => count.count)
     // console.log('tree3Count:', tree3Count)
     
     const tree4 = await axios.get(fourthReq)
     // console.log('tree4:', tree4)
-    const tree4Years = tree4.data.facet_groups[2].facets.map((year) => year.name)
+    const tree4Years = await tree4.data.facet_groups[2].facets.map((year) => year.name)
     // console.log('tree4Years:', tree4Years)
-    const tree4Count = tree4.data.facet_groups[2].facets.map((count) => count.count)
+    const tree4Count = await tree4.data.facet_groups[2].facets.map((count) => count.count)
     // console.log('tree4Count:', tree4Count)
 
     const tree5 = await axios.get(fifthReq)
     // console.log('tree5:', tree5)
-    const tree5Years = tree5.data.facet_groups[2].facets.map((year) => year.name)
+    const tree5Years = await tree5.data.facet_groups[2].facets.map((year) => year.name)
     // console.log('tree5Years:', tree5Years)
-    const tree5Count = tree5.data.facet_groups[2].facets.map((count) => count.count)
+    const tree5Count = await tree5.data.facet_groups[2].facets.map((count) => count.count)
     // console.log('tree5Count:', tree5Count)
   
     const yearlyCount = (years, count) => {
@@ -157,7 +161,7 @@ class Dashboard extends Component {
       return yearlyCountArr
     }
     
-    const top5Trees = {
+    const top5Trees = await {
       neighbourhood: confirmNeighbourhoodLowerCaps,
       tree1:
         {name: top5TreeNamesLowerCaps[0], totalCount: top5TreesByCount[0], yearlyCount: yearlyCount(tree1Years, tree1Count)},
@@ -170,7 +174,31 @@ class Dashboard extends Component {
       tree5:
         {name: top5TreeNamesLowerCaps[4], totalCount: top5TreesByCount[4], yearlyCount: yearlyCount(tree5Years, tree5Count)}
     }
-    // console.log('Dashboard --> top5Trees:', top5Trees)
+    console.log('Dashboard --> top5Trees:', top5Trees)
+
+    const top5Trees3 = {
+      neighbourhood: confirmNeighbourhoodLowerCaps,
+      names: [top5TreeNamesLowerCaps[0], top5TreeNamesLowerCaps[1]],
+      totalCount:[1,2,3,4,5],
+      yearlyCount:[58,86,54] 
+    } 
+    // console.log('=> Dashboard --> top5Trees3:', top5Trees3.neighbourhood)
+    console.log('=> Dashboard --> top5Trees3 names:', top5Trees3.names)
+
+
+    const top5Trees2 = {
+      neighbourhood: confirmNeighbourhoodLowerCaps,
+      names: [top5TreeNamesLowerCaps[0], top5TreeNamesLowerCaps[1], top5TreeNamesLowerCaps[2],
+              top5TreeNamesLowerCaps[3], top5TreeNamesLowerCaps[4]],
+      totalCount: [top5TreesByCount[0], top5TreesByCount[1], top5TreesByCount[2],
+                   top5TreesByCount[3], top5TreesByCount[4]],
+      yearlyCount: [yearlyCount(tree1Years, tree1Count), yearlyCount(tree2Years, tree2Count),
+                    yearlyCount(tree3Years, tree3Count), yearlyCount(tree4Years, tree4Count),
+                    yearlyCount(tree5Years, tree5Count)]
+    }
+    // console.log('Dashboard --> top5Trees2:', top5Trees2)
+    // console.log('Dashboard --> top5Trees2 - tree1:', top5Trees2[0].names)
+
 
     const series = [
       {
@@ -199,35 +227,13 @@ class Dashboard extends Component {
         drilldown: true
       },
     ]
-    
-    const drilldownSeries = [
-      {
-        name: top5Trees.tree1.name,
-        id: top5Trees.tree1.name,
-        data: [
-          [
-            "1990",
-            50
-          ],
-          [
-            "1992",
-            2
-          ],
-          [
-            "1993",
-            1
-          ],
-        ]
-      }
-    ]
-       
-    // console.log('=)=)=) series:', series)
       
     this.setState({
       neighbourhood: confirmNeighbourhoodLowerCaps,
       top5Trees: top5Trees,
+      top5Trees2: top5Trees2,
+      top5Trees3: top5Trees3,
       series: series,
-      drilldownSeries: drilldownSeries
     })
     
   }
@@ -288,8 +294,9 @@ class Dashboard extends Component {
             />
             <Chart
               top5Trees={this.state.top5Trees}
+              top5Trees2={this.state.top5Trees2}
+              top5Trees3={this.state.top5Trees3}
               series={this.state.series}
-              drilldownSeries={this.state.drilldownSeries}
               />
             {/* <Graphs/> */}
           </div>
