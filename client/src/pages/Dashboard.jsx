@@ -2,16 +2,23 @@ import React, { Component } from "react";
 import axios from 'axios';
 import Header from "../components/Header/Header";
 import Map from "../components/Map/Map";
-// import Graphs from "../components/Graphs/Graphs";
 import Footer from "../components/Footer/Footer";
-// import Chart from "../components/Chart/Chart";
 import Chart from "../components/Chart/Chart";
-// import Highcharts from 'highcharts'
+// import Note from "../components/Note/Note";
+import { Divider } from 'semantic-ui-react';
+// import MapControls from "../components/MapControls/MapControls";
 
-// 1st Neighbourhood: MOUNT PLEASANT 6,500+ trees
-// API --> (neighbourhood, Geom,)(Genus, Species, Common)(diameter when planted, year)
-// TODO: Set total Rows to all
-// TODO: Select Neighbourhood
+// import Button from "semantic-ui-react"
+
+
+// ------  Find the number per year of each of the 5 top trees planted in a neighbourhood.                   ------- // 
+// ------  The Tree Dataset is 147,173 records. Neighbourhood's can range from 11,650 - 2,606 trees planted. ------- //
+// ------  First narrowed it down by neighbourhood and obtained top 5 and totals of each planted             ------- //
+// ------  between 1989 - 2019. Next query the API asking how many trees were planted in each year for a     ------- //
+// ------  given type of tree (by common name).                                                              ------- //
+// ------ Find the number of trees planted each year for each of the top 5                                   ------- //
+// ------ ( & get all trees for each top 5 for the map geom )                                                ------- //
+
 
 // https://opendata.vancouver.ca/api/records/1.0/search/?dataset=street-trees&q=&rows=20&facet=neighbourhood_name&facet=street_side_name&refine.neighbourhood_name=GRANDVIEW-WOODLAND
 // https://opendata.vancouver.ca/api/records/1.0/search/?dataset=street-trees&q=&rows=20&refine.neighbourhood_name=MOUNT+PLEASANT
@@ -22,6 +29,8 @@ import Chart from "../components/Chart/Chart";
 
 const BASE_URL = "https://opendata.vancouver.ca/api/records/1.0/search/"
 const DATASET = "?dataset=street-trees&q=&rows=1000"
+// const ROWS_1000 = "rows=1000"  // get top 5 - does not require many rows consider changing row number based on request 
+// const ROWS_100 = "rows=100"    // get data from each requires max rows of entires - max 2,606 rows
 const NEIGHBOURHOOD = "MOUNT+PLEASANT"
 const FACET_COMMON_NAME = "&facet=common_name"
 const REFINE_COMMON_NAME = "&refine.common_name="
@@ -58,7 +67,13 @@ class Dashboard extends Component {
     top5Trees: [],
     top5Trees2: [],
     top5Trees3: [],
-    series: []
+    series: [],
+    geoms: [],
+    latLngTree1:[],
+    latLngTree2:[],
+    latLngTree3:[],
+    latLngTree4:[],
+    latLngTree5:[]
     // allCommonNamesWithTotals: [],
     // top5CommonNames: [],
     // numberOfCommonNames: [],
@@ -68,13 +83,25 @@ class Dashboard extends Component {
     // totalCounts: [],
   }
 
+
+  // get Data in DidMount that will not change 
+  // get Data that you want refreshed in DidUpdate - here state is updated. 
+
+  // [] Separate into functions
+  // [] 1st Get all Trees from a neighbourhood - to get the top 5 trees 
+  // [] make 5 calls for each 
+  // So it's really all the functions - they get called once to show a nice page 
+  // and again each time one is clicked 
+  // [] get these call results to be lights - i.e. faster
+
+
   async componentDidMount() {
     // ---- Async function because only after the first request (longest) can we know which are the top 5 trees to investigate ---- //
     const getAllNeighbourhoodTrees = await Promise.all([
-    axios.get(`${API_URL_NEIGHBOURHOOD}`)])
+      axios.get(`${API_URL_NEIGHBOURHOOD}`)])
     console.log('Dashboard --> :', getAllNeighbourhoodTrees)
     // Sleep for 20 seconds
-    // await new Promise(resolve => { setTimeout(resolve, 20000); });
+    // await new Promise(resolve => { setTimeout(resolve, 20000); }); 
 
     const confirmNeighbourhood = await getAllNeighbourhoodTrees[0].data.facet_groups[1].facets[0].name
     const confirmNeighbourhoodLowerCaps = await this.capitalizeFirstLetter(confirmNeighbourhood)
@@ -91,15 +118,6 @@ class Dashboard extends Component {
     // ------ Numbers of trees planted of each type in the top 5 ------- //
     const top5TreesByCount = await top5TreesByCommonNames.map(count => count.count)
     // console.log('top5TreesByCount:', top5TreesByCount)
-
-    // ------  Find the number per year of each of the 5 top trees planted in a neighbourhood.                   ------- // 
-    // ------  The Tree Dataset is 147,173 records. Neighbourhood's can range from 11,650 - 2,606 trees planted. ------- //
-    // ------  First narrowed it down by neighbourhood and obtained top 5 and totals of each planted             ------- //
-    // ------  between 1989 - 2019. Next query the API asking how many trees were planted in each year for a     ------- //
-    // ------  given type of tree (by common name).                                                              ------- //
-
-    // ------ Find the number of trees planted each year for each of the top 5  ------- //
-    // ------ ( & get all trees for each top 5 for the map geom )               ------- //
     
     // ------ Formulate API Neighbourhood Calls ------- //
     // ------ Format Tree Common Name for API format ------- //
@@ -117,7 +135,7 @@ class Dashboard extends Component {
     const fourthReq = API_URL_NEIGHBOURHOOD_DATE_PLANTED_REFINE_COMMON_NAME + FORMATTED_COMMON_NAME[3]
     const fifthReq = API_URL_NEIGHBOURHOOD_DATE_PLANTED_REFINE_COMMON_NAME + FORMATTED_COMMON_NAME[4]
 
-    const tree1 = await axios.get(firstReq)   // removed await 
+    const tree1 = await axios.get(firstReq)   // removed await?
     // console.log('tree1:', tree1)
     const tree1Years = await tree1.data.facet_groups[2].facets.map((year) => year.name)
     // console.log('tree1Years:', tree1Years)
@@ -161,45 +179,58 @@ class Dashboard extends Component {
       return yearlyCountArr
     }
     
-    const top5Trees = await {
+    const top5Trees = {
       neighbourhood: confirmNeighbourhoodLowerCaps,
       tree1:
-        {name: top5TreeNamesLowerCaps[0], totalCount: top5TreesByCount[0], yearlyCount: yearlyCount(tree1Years, tree1Count)},
+        { name: top5TreeNamesLowerCaps[0], totalCount: top5TreesByCount[0], yearlyCount: yearlyCount(tree1Years, tree1Count) },
       tree2:
-        {name: top5TreeNamesLowerCaps[1], totalCount: top5TreesByCount[1], yearlyCount: yearlyCount(tree2Years, tree2Count)},
+        { name: top5TreeNamesLowerCaps[1], totalCount: top5TreesByCount[1], yearlyCount: yearlyCount(tree2Years, tree2Count) },
       tree3:
-        {name: top5TreeNamesLowerCaps[2], totalCount: top5TreesByCount[2], yearlyCount: yearlyCount(tree3Years, tree3Count)},
+        { name: top5TreeNamesLowerCaps[2], totalCount: top5TreesByCount[2], yearlyCount: yearlyCount(tree3Years, tree3Count) },
       tree4:
-        {name: top5TreeNamesLowerCaps[3], totalCount: top5TreesByCount[3], yearlyCount: yearlyCount(tree4Years, tree4Count)},
+        { name: top5TreeNamesLowerCaps[3], totalCount: top5TreesByCount[3], yearlyCount: yearlyCount(tree4Years, tree4Count) },
       tree5:
-        {name: top5TreeNamesLowerCaps[4], totalCount: top5TreesByCount[4], yearlyCount: yearlyCount(tree5Years, tree5Count)}
+        { name: top5TreeNamesLowerCaps[4], totalCount: top5TreesByCount[4], yearlyCount: yearlyCount(tree5Years, tree5Count) }
     }
     console.log('Dashboard --> top5Trees:', top5Trees)
 
     const top5Trees3 = {
       neighbourhood: confirmNeighbourhoodLowerCaps,
       names: [top5TreeNamesLowerCaps[0], top5TreeNamesLowerCaps[1]],
-      totalCount:[1,2,3,4,5],
-      yearlyCount:[58,86,54] 
-    } 
+      totalCount: [1, 2, 3, 4, 5],
+      yearlyCount: [58, 86, 54]
+    }
     // console.log('=> Dashboard --> top5Trees3:', top5Trees3.neighbourhood)
     console.log('=> Dashboard --> top5Trees3 names:', top5Trees3.names)
-
 
     const top5Trees2 = {
       neighbourhood: confirmNeighbourhoodLowerCaps,
       names: [top5TreeNamesLowerCaps[0], top5TreeNamesLowerCaps[1], top5TreeNamesLowerCaps[2],
-              top5TreeNamesLowerCaps[3], top5TreeNamesLowerCaps[4]],
+      top5TreeNamesLowerCaps[3], top5TreeNamesLowerCaps[4]],
       totalCount: [top5TreesByCount[0], top5TreesByCount[1], top5TreesByCount[2],
-                   top5TreesByCount[3], top5TreesByCount[4]],
+      top5TreesByCount[3], top5TreesByCount[4]],
       yearlyCount: [yearlyCount(tree1Years, tree1Count), yearlyCount(tree2Years, tree2Count),
-                    yearlyCount(tree3Years, tree3Count), yearlyCount(tree4Years, tree4Count),
-                    yearlyCount(tree5Years, tree5Count)]
+      yearlyCount(tree3Years, tree3Count), yearlyCount(tree4Years, tree4Count),
+      yearlyCount(tree5Years, tree5Count)]
     }
-    // console.log('Dashboard --> top5Trees2:', top5Trees2)
+
+    const top5Trees2b = [{
+      neighbourhood: confirmNeighbourhoodLowerCaps,
+      names: [top5TreeNamesLowerCaps[0], top5TreeNamesLowerCaps[1], top5TreeNamesLowerCaps[2],
+      top5TreeNamesLowerCaps[3], top5TreeNamesLowerCaps[4]],
+      totalCount: [top5TreesByCount[0], top5TreesByCount[1], top5TreesByCount[2],
+      top5TreesByCount[3], top5TreesByCount[4]],
+      yearlyCount: [yearlyCount(tree1Years, tree1Count), yearlyCount(tree2Years, tree2Count),
+      yearlyCount(tree3Years, tree3Count), yearlyCount(tree4Years, tree4Count),
+      yearlyCount(tree5Years, tree5Count)]
+  }]
+    console.log('==> Dashboard --> top5Trees2b:', top5Trees2b)
     // console.log('Dashboard --> top5Trees2 - tree1:', top5Trees2[0].names)
+    console.log('==> Dashboard -- TEST -->', top5Trees2.names.map(name => name.name)[0])
 
-
+    const test = top5Trees2.names[0]
+    console.log('=====> ###### Test:', test)
+    
     const series = [
       {
         name: top5Trees.tree1.name,
@@ -227,15 +258,63 @@ class Dashboard extends Component {
         drilldown: true
       },
     ]
-      
+    
+    // -------------   Get geoms available of each of the top 5 trees   -----------//
+    // const geoms = [
+    //   [[224, 3645], [24, 213]],
+    //   [[562, 3456], [22, 352]],
+    //   [[245, 345], [2456, 34]]
+    // ]
+    // console.log('geoms:', geoms)
+
+    // const tree1Years = await tree1.data.facet_groups[2].facets.map((year) => year.name) 
+    console.log('tree1:', tree1)
+
+    // get Tree1's geoms 
+    const geomTree1 = await tree1.data.records.map(geoms => geoms.fields.geom)
+    // console.log('geomTree1:', geomTree1)
+    // filter out geoms that are not present  
+    const geomTree1cleaned = await geomTree1.filter(geoms => geoms !== undefined)
+    // console.log('geomTree1cleaned:', geomTree1cleaned)
+    // get coordinates LatLng 
+    const latLngTree1 = await geomTree1cleaned.map(co => co.coordinates)
+    // console.log('latLangTree1:', latLngTree1)  // shape [Lon, Lat]
+
+    const geomTree2 = await tree2.data.records.map(geoms => geoms.fields.geom)
+    const geomTree2cleaned = await geomTree2.filter(geoms => geoms !== undefined)
+    const latLngTree2 = await geomTree2cleaned.map(co => co.coordinates)
+    // console.log('latLangTree2:', latLngTree2)  // shape [Lon, Lat]
+
+    const geomTree3 = await tree3.data.records.map(geoms => geoms.fields.geom)
+    const geomTree3cleaned = await geomTree3.filter(geoms => geoms !== undefined)
+    const latLngTree3 = await geomTree3cleaned.map(co => co.coordinates)
+    // console.log('latLangTree3:', latLngTree3)  // shape [Lon, Lat]
+
+    const geomTree4 = await tree4.data.records.map(geoms => geoms.fields.geom)
+    const geomTree4cleaned = await geomTree4.filter(geoms => geoms !== undefined)
+    const latLngTree4 = await geomTree4cleaned.map(co => co.coordinates)
+    // console.log('latLangTree4:', latLngTree4)  // shape [Lon, Lat]
+
+    const geomTree5 = await tree5.data.records.map(geoms => geoms.fields.geom)
+    const geomTree5cleaned = await geomTree5.filter(geoms => geoms !== undefined)
+    const latLngTree5 = await geomTree5cleaned.map(co => co.coordinates)
+    // console.log('latLangTree5:', latLngTree5)  // shape [Lon, Lat]
+
+    const geoms = await [latLngTree1, latLngTree2, latLngTree3, latLngTree4, latLngTree5]
+
     this.setState({
       neighbourhood: confirmNeighbourhoodLowerCaps,
       top5Trees: top5Trees,
       top5Trees2: top5Trees2,
       top5Trees3: top5Trees3,
       series: series,
+      geoms: geoms,
+      latLngTree1: latLngTree1,
+      latLngTree2: latLngTree2,
+      latLngTree3: latLngTree3,
+      latLngTree4: latLngTree4,
+      latLngTree5: latLngTree5
     })
-    
   }
 
   capitalizeFirstLetter(sentence) { const words = sentence.split(" ");
@@ -244,70 +323,50 @@ class Dashboard extends Component {
     return newSentence
   }
 
-  // getTreesTop() {
-  //   // ---- Select Neighbourhood (insert into URL string) ---- //
-  //   // ---- Get Top 5 Trees planted in this Neighbourhood ---- //
-  //   axios
-  //     .get(`${API_URL_NEIGHBOURHOOD}`)
-  //     .then((response) => {
-  //       console.log("Response", response)
-  //       // Select Neighbourhood (insert into URL string)
-  //       // ---- Get Top 5 Trees planted in this Neighbourhood ---- //
-  //       const top5 = response.data.facet_groups[0].facets.slice(0, 5)
-  //       console.log('top5:', top5)
-  //       const top5Array = top5.map(treeName => treeName.name)
-  //       console.log('top5Array:', top5Array)
-  //       // this.setState({
-  //       //   top5: top5,
-  //       //   top5Array: top5Array
-  //       // })
-  //       return top5
-  //     })
-  //     .catch(err => { console.log(err) })
-  
-  //   console.log("getTreesTop5 Still in this function")
-  //   const five = 5
-  //   console.log('five:', five)
-  //   console.log('TOP% FROM FN', this.state.top5)
-  //   // console.log('Just the words', top5)
-    
-  // }
-
   render() {
 
-    // console.log("Series in State", this.state.series)
     return (
       <section className="dashboard">
         <div className="dashboard__container">
+          {/* <MapControls/> */}
           <Header
             neighbourhood={this.state.neighbourhood}
-            // capitalizeFirstLetter={this.capitalizeFirstLetter}
           />
+          <Divider></Divider>
           <div className="dashboard__main">
             <Map
               neighbourhood={this.state.neighbourhood}
-              // ----- let the map parse out the geom & possibly reverse code locations ----- // 
-              // trees={this.state.trees}
-              // treeCount={this.state.treeCount}
-              // commonNamesWithEachTotal={this.state.allCommonNamesWithTotals}
-              // numberOfCommonNames={this.state.numberOfCommonNames}
-            />
-            <Chart
-              top5Trees={this.state.top5Trees}
-              top5Trees2={this.state.top5Trees2}
-              top5Trees3={this.state.top5Trees3}
+              geoms={this.state.geoms}
+              latLngTree1={this.state.latLngTree1}
+              latLngTree2={this.state.latLngTree2}
+              latLngTree3={this.state.latLngTree3}
+              latLngTree4={this.state.latLngTree4}
+              latLngTree5={this.state.latLngTree5}
               series={this.state.series}
-              />
-            {/* <Graphs/> */}
+            />
+            
+            <div className="dashboard__right">
+              <Chart
+                top5Trees={this.state.top5Trees}
+                top5Trees2={this.state.top5Trees2}
+                top5Trees3={this.state.top5Trees3}
+                series={this.state.series}
+                />
+              {/* <Note/> */}
+            </div>
           </div>
+          <Divider></Divider>
           <Footer />
+          {/* <Button /> */}
         </div>
-    </section>
+      </section>
     );
   }
 }
 
 export default Dashboard;
+
+// Add Loading? ... mid screen ... https://reactjs.org/docs/conditional-rendering.html
 
 // https://ishadeed.com/article/website-headers-flexbox/
 // https://stackoverflow.com/questions/44182951/axios-chaining-multiple-api-requests
