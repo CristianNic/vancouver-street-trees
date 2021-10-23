@@ -4,12 +4,10 @@
 // To get up and running without designing tiles, use the Open Street Map Tiles that come with Leaflet
 // Simple make sure the Open Street Map tile layer is uncomment out in ArtMap.jsx
 
-{
-	/* <TileLayer
-  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-  attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a>'
-/>; */
-}
+// <TileLayer
+//   url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+//   attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a>'
+// />;
 
 // Here is how the Mapbox token is composed:
 
