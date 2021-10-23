@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import axios from 'axios';
 import Header from "../components/Header/Header";
+import Intro from "../components/Intro/Intro";
 import Map from "../components/Map/Map";
 import Footer from "../components/Footer/Footer";
 import Chart from "../components/Chart/Chart";
@@ -73,27 +74,9 @@ class Dashboard extends Component {
     latLngTree2:[],
     latLngTree3:[],
     latLngTree4:[],
-    latLngTree5:[]
-    // allCommonNamesWithTotals: [],
-    // top5CommonNames: [],
-    // numberOfCommonNames: [],
-    // recordsWithGeom: [],
-    // recordsNoGeom: [],
-    // top5CommonNames: [],             
-    // totalCounts: [],
+    latLngTree5: [],
+    top5TreeNamesLowerCaps: []
   }
-
-
-  // get Data in DidMount that will not change 
-  // get Data that you want refreshed in DidUpdate - here state is updated. 
-
-  // [] Separate into functions
-  // [] 1st Get all Trees from a neighbourhood - to get the top 5 trees 
-  // [] make 5 calls for each 
-  // So it's really all the functions - they get called once to show a nice page 
-  // and again each time one is clicked 
-  // [] get these call results to be lights - i.e. faster
-
 
   async componentDidMount() {
     // ---- Async function because only after the first request (longest) can we know which are the top 5 trees to investigate ---- //
@@ -325,39 +308,38 @@ class Dashboard extends Component {
 
   render() {
 
+    const { neighbourhood, top5Trees, top5TreeNamesLowerCaps, series,
+      latLngTree1, latLngTree2, latLngTree3, latLngTree4, latLngTree5 } = this.state
+
     return (
       <section className="dashboard">
         <div className="dashboard__container">
-          {/* <MapControls/> */}
           <Header
-            neighbourhood={this.state.neighbourhood}
+            neighbourhood={neighbourhood}
           />
-          <Divider></Divider>
+          <Divider/>
           <div className="dashboard__main">
-            <Map
-              neighbourhood={this.state.neighbourhood}
-              geoms={this.state.geoms}
-              latLngTree1={this.state.latLngTree1}
-              latLngTree2={this.state.latLngTree2}
-              latLngTree3={this.state.latLngTree3}
-              latLngTree4={this.state.latLngTree4}
-              latLngTree5={this.state.latLngTree5}
-              series={this.state.series}
-            />
-            
-            <div className="dashboard__right">
+            <div className="dashboard__left">
+              <Intro />
               <Chart
-                top5Trees={this.state.top5Trees}
-                top5Trees2={this.state.top5Trees2}
-                top5Trees3={this.state.top5Trees3}
-                series={this.state.series}
-                />
-              {/* <Note/> */}
+                top5Trees={top5Trees}
+                series={series}
+              />
+            </div>
+            <div className="dashboard__right">
+              <Map
+                latLngTree1={latLngTree1}
+                latLngTree2={latLngTree2}
+                latLngTree3={latLngTree3}
+                latLngTree4={latLngTree4}
+                latLngTree5={latLngTree5}
+                series={series}
+                top5TreeNamesLowerCaps={top5TreeNamesLowerCaps}
+              />   
             </div>
           </div>
-          <Divider></Divider>
-          <Footer />
-          {/* <Button /> */}
+          <Divider/>
+          <Footer/>
         </div>
       </section>
     );
