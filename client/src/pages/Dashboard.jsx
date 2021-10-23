@@ -5,11 +5,9 @@ import Intro from "../components/Intro/Intro";
 import Map from "../components/Map/Map";
 import Footer from "../components/Footer/Footer";
 import Chart from "../components/Chart/Chart";
-// import Note from "../components/Note/Note";
-import { Divider } from 'semantic-ui-react';
-// import MapControls from "../components/MapControls/MapControls";
+import { Divider } from "semantic-ui-react";
+import { capitalizeFirstLetter } from "../utils/Functions";
 
-// import Button from "semantic-ui-react"
 
 
 // ------  Find the number per year of each of the 5 top trees planted in a neighbourhood.                   ------- // 
@@ -87,7 +85,7 @@ class Dashboard extends Component {
     // await new Promise(resolve => { setTimeout(resolve, 20000); }); 
 
     const confirmNeighbourhood = await getAllNeighbourhoodTrees[0].data.facet_groups[1].facets[0].name
-    const confirmNeighbourhoodLowerCaps = await this.capitalizeFirstLetter(confirmNeighbourhood)
+    const confirmNeighbourhoodLowerCaps = await capitalizeFirstLetter(confirmNeighbourhood)
     // console.log('neighbourhoodLowerCaps:', confirmNeighbourhoodLowerCaps)
 
     // ------ Top 5 Trees by Common Names ------- //
@@ -95,7 +93,7 @@ class Dashboard extends Component {
     // console.log("top5TreesByCommonNames", top5TreesByCommonNames)
 
     const top5TreeNames = await top5TreesByCommonNames.map(treeName => treeName.name)
-    const top5TreeNamesLowerCaps = await top5TreeNames.map(item => this.capitalizeFirstLetter(item))
+    const top5TreeNamesLowerCaps = await top5TreeNames.map(item => capitalizeFirstLetter(item))
     // console.log('top5TreeNamesLowerCaps:', top5TreeNamesLowerCaps)
 
     // ------ Numbers of trees planted of each type in the top 5 ------- //
@@ -175,45 +173,9 @@ class Dashboard extends Component {
       tree5:
         { name: top5TreeNamesLowerCaps[4], totalCount: top5TreesByCount[4], yearlyCount: yearlyCount(tree5Years, tree5Count) }
     }
-    console.log('Dashboard --> top5Trees:', top5Trees)
+    //console.log('Dashboard --> top5Trees:', top5Trees)
 
-    const top5Trees3 = {
-      neighbourhood: confirmNeighbourhoodLowerCaps,
-      names: [top5TreeNamesLowerCaps[0], top5TreeNamesLowerCaps[1]],
-      totalCount: [1, 2, 3, 4, 5],
-      yearlyCount: [58, 86, 54]
-    }
-    // console.log('=> Dashboard --> top5Trees3:', top5Trees3.neighbourhood)
-    console.log('=> Dashboard --> top5Trees3 names:', top5Trees3.names)
 
-    const top5Trees2 = {
-      neighbourhood: confirmNeighbourhoodLowerCaps,
-      names: [top5TreeNamesLowerCaps[0], top5TreeNamesLowerCaps[1], top5TreeNamesLowerCaps[2],
-      top5TreeNamesLowerCaps[3], top5TreeNamesLowerCaps[4]],
-      totalCount: [top5TreesByCount[0], top5TreesByCount[1], top5TreesByCount[2],
-      top5TreesByCount[3], top5TreesByCount[4]],
-      yearlyCount: [yearlyCount(tree1Years, tree1Count), yearlyCount(tree2Years, tree2Count),
-      yearlyCount(tree3Years, tree3Count), yearlyCount(tree4Years, tree4Count),
-      yearlyCount(tree5Years, tree5Count)]
-    }
-
-    const top5Trees2b = [{
-      neighbourhood: confirmNeighbourhoodLowerCaps,
-      names: [top5TreeNamesLowerCaps[0], top5TreeNamesLowerCaps[1], top5TreeNamesLowerCaps[2],
-      top5TreeNamesLowerCaps[3], top5TreeNamesLowerCaps[4]],
-      totalCount: [top5TreesByCount[0], top5TreesByCount[1], top5TreesByCount[2],
-      top5TreesByCount[3], top5TreesByCount[4]],
-      yearlyCount: [yearlyCount(tree1Years, tree1Count), yearlyCount(tree2Years, tree2Count),
-      yearlyCount(tree3Years, tree3Count), yearlyCount(tree4Years, tree4Count),
-      yearlyCount(tree5Years, tree5Count)]
-  }]
-    console.log('==> Dashboard --> top5Trees2b:', top5Trees2b)
-    // console.log('Dashboard --> top5Trees2 - tree1:', top5Trees2[0].names)
-    console.log('==> Dashboard -- TEST -->', top5Trees2.names.map(name => name.name)[0])
-
-    const test = top5Trees2.names[0]
-    console.log('=====> ###### Test:', test)
-    
     const series = [
       {
         name: top5Trees.tree1.name,
@@ -241,7 +203,8 @@ class Dashboard extends Component {
         drilldown: true
       },
     ]
-    
+    // console.log('series:', series)
+
     // -------------   Get geoms available of each of the top 5 trees   -----------//
     // const geoms = [
     //   [[224, 3645], [24, 213]],
@@ -288,8 +251,6 @@ class Dashboard extends Component {
     this.setState({
       neighbourhood: confirmNeighbourhoodLowerCaps,
       top5Trees: top5Trees,
-      top5Trees2: top5Trees2,
-      top5Trees3: top5Trees3,
       series: series,
       geoms: geoms,
       latLngTree1: latLngTree1,
@@ -298,12 +259,6 @@ class Dashboard extends Component {
       latLngTree4: latLngTree4,
       latLngTree5: latLngTree5
     })
-  }
-
-  capitalizeFirstLetter(sentence) { const words = sentence.split(" ");
-    const caps = words.map(word => word.charAt(0).toUpperCase() + word.substr(1).toLowerCase())
-    const newSentence = caps.join(" ");
-    return newSentence
   }
 
   render() {
