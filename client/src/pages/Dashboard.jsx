@@ -8,8 +8,6 @@ import Chart from "../components/Chart/Chart";
 import { Divider } from "semantic-ui-react";
 import { capitalizeFirstLetter } from "../utils/Functions";
 
-
-
 // ------  Find the number per year of each of the 5 top trees planted in a neighbourhood.                   ------- // 
 // ------  The Tree Dataset is 147,173 records. Neighbourhood's can range from 11,650 - 2,606 trees planted. ------- //
 // ------  First narrowed it down by neighbourhood and obtained top 5 and totals of each planted             ------- //
@@ -17,7 +15,6 @@ import { capitalizeFirstLetter } from "../utils/Functions";
 // ------  given type of tree (by common name).                                                              ------- //
 // ------ Find the number of trees planted each year for each of the top 5                                   ------- //
 // ------ ( & get all trees for each top 5 for the map geom )                                                ------- //
-
 
 // https://opendata.vancouver.ca/api/records/1.0/search/?dataset=street-trees&q=&rows=20&facet=neighbourhood_name&facet=street_side_name&refine.neighbourhood_name=GRANDVIEW-WOODLAND
 // https://opendata.vancouver.ca/api/records/1.0/search/?dataset=street-trees&q=&rows=20&refine.neighbourhood_name=MOUNT+PLEASANT
@@ -38,6 +35,8 @@ const REFINE_NEIGHBOURHOOD = "&refine.neighbourhood_name="
 const FACET_DATE_PLANTED = "&facet=date_planted"
 
 const API_URL_NEIGHBOURHOOD = BASE_URL + DATASET + FACET_COMMON_NAME + REFINE_NEIGHBOURHOOD + NEIGHBOURHOOD
+
+const API_URL_REFINED = BASE_URL + DATASET + FACET_COMMON_NAME + REFINE_NEIGHBOURHOOD
 
 // const URL_date =  base_url + "?dataset=street-trees&q=date_planted%3A%5B1989-01-01+TO+2020-01-01%5D&facet=common_name&facet=neighbourhood_name&facet=date_planted&refine.neighbourhood_name=MOUNT+PLEASANT"
 // const top1_rows100 = base_url + "?dataset=street-trees&q=date_planted%3A%5B1989-01-01+TO+2020-01-01%5D&rows=300&" +
@@ -64,27 +63,42 @@ class Dashboard extends Component {
   state = {
     neighbourhood: '',
     top5Trees: [],
-    top5Trees2: [],
-    top5Trees3: [],
     series: [],
-    geoms: [],
     latLngTree1:[],
     latLngTree2:[],
     latLngTree3:[],
     latLngTree4:[],
     latLngTree5: [],
-    top5TreeNamesLowerCaps: []
+    selectedNeighbourhood: "MOUNT+PLEASANT",
+    top5TreeNamesLowerCaps: [],
+    totalTop5Planted: [],
+    //isLoaded: false,
   }
 
-  async componentDidMount() {
+  componentDidMount() {
+    const selectedNeighbourhood = this.state.selectedNeighbourhood
+    this.getData(selectedNeighbourhood)
+  }
+
+  async getData(selectedNeighbourhood) {
+
+    const API_URL_NEIGHBOURHOOD = API_URL_REFINED + selectedNeighbourhood
+
     // ---- Async function because only after the first request (longest) can we know which are the top 5 trees to investigate ---- //
     const getAllNeighbourhoodTrees = await Promise.all([
-      axios.get(`${API_URL_NEIGHBOURHOOD}`)])
+      axios
+        .get(`${API_URL_NEIGHBOURHOOD}`)
+        // .then(resp => {
+        //   console.log(resp.data);
+        // })
+        .catch(err => {
+          console.error(err);
+        })
+    ])
+    
     console.log('Dashboard --> :', getAllNeighbourhoodTrees)
-    // Sleep for 20 seconds
-    // await new Promise(resolve => { setTimeout(resolve, 20000); }); 
 
-    const confirmNeighbourhood = await getAllNeighbourhoodTrees[0].data.facet_groups[1].facets[0].name
+    const confirmNeighbourhood = await getAllNeighbourhoodTrees[0].data.facet_groups[1].facets[0].name   // <---- needed just place it
     const confirmNeighbourhoodLowerCaps = await capitalizeFirstLetter(confirmNeighbourhood)
     // console.log('neighbourhoodLowerCaps:', confirmNeighbourhoodLowerCaps)
 
@@ -106,9 +120,12 @@ class Dashboard extends Component {
     // console.log('FORMATTED_COMMON_NAME:', FORMATTED_COMMON_NAME)
     
     // ---- Formulate URLs for the next 5 requests ---- //
+    // const API_URL_NEIGHBOURHOOD_DATE_PLANTED_REFINE_COMMON_NAME =
+    //   BASE_URL + DATASET + FACET_COMMON_NAME + FACET_NEIGHBOURHOOD + FACET_DATE_PLANTED
+    //   + REFINE_NEIGHBOURHOOD + NEIGHBOURHOOD + REFINE_COMMON_NAME
     const API_URL_NEIGHBOURHOOD_DATE_PLANTED_REFINE_COMMON_NAME =
       BASE_URL + DATASET + FACET_COMMON_NAME + FACET_NEIGHBOURHOOD + FACET_DATE_PLANTED
-      + REFINE_NEIGHBOURHOOD + NEIGHBOURHOOD + REFINE_COMMON_NAME
+      + REFINE_NEIGHBOURHOOD + selectedNeighbourhood + REFINE_COMMON_NAME
     
     const firstReq = API_URL_NEIGHBOURHOOD_DATE_PLANTED_REFINE_COMMON_NAME + FORMATTED_COMMON_NAME[0]
     const secondReq = API_URL_NEIGHBOURHOOD_DATE_PLANTED_REFINE_COMMON_NAME + FORMATTED_COMMON_NAME[1]
@@ -160,6 +177,11 @@ class Dashboard extends Component {
       return yearlyCountArr
     }
     
+    //--------- for Chart ------ // 
+    //------------ Total Number of Trees Planted out of the Top5 displayed on graph
+    const reducer = (previousValue, currentValue) => previousValue + currentValue
+    const totalTop5Planted = top5TreesByCount.reduce(reducer)
+
     const top5Trees = {
       neighbourhood: confirmNeighbourhoodLowerCaps,
       tree1:
@@ -173,8 +195,7 @@ class Dashboard extends Component {
       tree5:
         { name: top5TreeNamesLowerCaps[4], totalCount: top5TreesByCount[4], yearlyCount: yearlyCount(tree5Years, tree5Count) }
     }
-    //console.log('Dashboard --> top5Trees:', top5Trees)
-
+    // console.log('Dashboard --> top5Trees:', top5Trees)
 
     const series = [
       {
@@ -205,16 +226,10 @@ class Dashboard extends Component {
     ]
     // console.log('series:', series)
 
-    // -------------   Get geoms available of each of the top 5 trees   -----------//
-    // const geoms = [
-    //   [[224, 3645], [24, 213]],
-    //   [[562, 3456], [22, 352]],
-    //   [[245, 345], [2456, 34]]
-    // ]
-    // console.log('geoms:', geoms)
+    // ------- for Map --------// 
 
     // const tree1Years = await tree1.data.facet_groups[2].facets.map((year) => year.name) 
-    console.log('tree1:', tree1)
+    // console.log('tree1:', tree1)
 
     // get Tree1's geoms 
     const geomTree1 = await tree1.data.records.map(geoms => geoms.fields.geom)
@@ -246,24 +261,31 @@ class Dashboard extends Component {
     const latLngTree5 = await geomTree5cleaned.map(co => co.coordinates)
     // console.log('latLangTree5:', latLngTree5)  // shape [Lon, Lat]
 
-    const geoms = await [latLngTree1, latLngTree2, latLngTree3, latLngTree4, latLngTree5]
+   // const geoms = await [latLngTree1, latLngTree2, latLngTree3, latLngTree4, latLngTree5]
 
     this.setState({
       neighbourhood: confirmNeighbourhoodLowerCaps,
       top5Trees: top5Trees,
       series: series,
-      geoms: geoms,
       latLngTree1: latLngTree1,
       latLngTree2: latLngTree2,
       latLngTree3: latLngTree3,
       latLngTree4: latLngTree4,
-      latLngTree5: latLngTree5
+      latLngTree5: latLngTree5,
+      top5TreeNamesLowerCaps: top5TreeNamesLowerCaps,
+      totalTop5Planted: totalTop5Planted,
+      //isLoaded: true,
     })
   }
 
+  handleDropdown = (e, data) => {
+    console.log('Neighbourhood Selected:', data.value)
+    this.getData(data.value)
+  }
+  
   render() {
 
-    const { neighbourhood, top5Trees, top5TreeNamesLowerCaps, series,
+    const { neighbourhood, top5Trees, top5TreeNamesLowerCaps, series, totalTop5Planted,
       latLngTree1, latLngTree2, latLngTree3, latLngTree4, latLngTree5 } = this.state
 
     return (
@@ -271,6 +293,7 @@ class Dashboard extends Component {
         <div className="dashboard__container">
           <Header
             neighbourhood={neighbourhood}
+            handleDropdown={this.handleDropdown}
           />
           <Divider/>
           <div className="dashboard__main">
@@ -278,6 +301,8 @@ class Dashboard extends Component {
               <Intro />
               <Chart
                 top5Trees={top5Trees}
+                neighbourhood={neighbourhood}
+                totalTop5Planted={totalTop5Planted}
                 series={series}
               />
             </div>
