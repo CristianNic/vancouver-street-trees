@@ -9,11 +9,14 @@
 
 /* Components */
 @import "./components/Header/Header";
-@import "./components/Map/Map";
-//@import "./components/Graphs/Graphs";
+@import "./components/Intro/Intro";
 @import "./components/Chart/Chart";
-//@import "./components/Explanation/Explanation";
+@import "./components/Map/Map";
+@import "./components/MapControls/MapControls";
 @import "./components/Footer/Footer";
 
 /* Leaflet */
 @import "leaflet/dist/leaflet.css";
+
+/* Semantic UI */
+@import "semantic-ui-css/semantic.min.css";
