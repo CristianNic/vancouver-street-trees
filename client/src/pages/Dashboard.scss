@@ -1,44 +1,20 @@
 .dashboard {
-	background-color: rgb(211, 211, 211);
-	// background-color: rgb(234, 234, 234);
-  	// background-color: rgb(239, 239, 239); <- Semios
-  padding-bottom: 1000px;
+	background-color: $lightgrey;
+	padding-bottom: 1000px;
 	&__container {
 		display: flex;
 		flex-direction: column;
-		// // text-align: center;
-		// align-items: center;
-		// // flex-wrap: wrap;
-		// width: 1024px; // smaller laptop
-    // My Chrome (100%) view area 1344px * 705px 
-		width: 1200px; 
-    // width: 1440px;  // laptop large
-    // width: 1440px;  // 1440px XL laptop 
-   
+		width: 1200px;
 		margin: 0 auto;
-		// border: dashed 5px blue;
-	  // TODO: responsive design
 	}
 	&__main {
 		display: flex;
 		flex-direction: row;
     justify-content: space-between;
-  }
-  &__left {
+	}
+	&__left {
 		display: flex;
 		flex-direction: column;
 		justify-content: space-between;
 	}
-}
-.bold {
-	font-weight: 600;
-}
-.bolder {
-	font-weight: 900;
-}
-.black {
-	color: black;
-}
-.underline {
-	text-decoration: underline;
 }
