@@ -34,4 +34,5 @@ src/utils/various-icons.js
 src/pages/SignUp.jsx
 src/pages/SignUp.scss
 
+src/utils/Utils-samples.js
 
