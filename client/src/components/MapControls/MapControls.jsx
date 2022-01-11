@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Button } from "semantic-ui-react";
-import { colors } from "../../utils/Variables";
+// import { colors } from "../../utils/Variables";
 
 class MapControls extends Component {
 
@@ -65,7 +65,6 @@ class MapControls extends Component {
               id={4}
               active={activeTrees[4]}
               onClick={handleClickActiveTree}
-              color={colors[4] }
             >
             </Button>
             <h4 className="map-controls__label">
