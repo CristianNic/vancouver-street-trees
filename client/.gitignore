@@ -29,10 +29,7 @@ yarn-error.log*
 /public/skateboarding.svg
 /src/data
 
-src/utils/MapboxToken.js
 src/utils/various-icons.js
-src/pages/SignUp.jsx
-src/pages/SignUp.scss
 
 src/utils/Utils-samples.js
 
