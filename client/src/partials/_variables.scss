@@ -3,7 +3,7 @@ $tablet-breakpoint: 768px;
 $desktop-breakpoint: 1440px;
 
 /* Layout spacing */
-$side-margin-mob: 1.6rem;   // check for iphone
+$side-margin-mob: 1.6rem;   
 $side-margin-tab: 2.4rem;
 $side-margin-desk: 18rem;
 $max-width: 1080px;
@@ -15,15 +15,29 @@ $text-field-border: #e1e1e1;
 $text-field-background-fill: #fafafa;
 
 /* Colours */
-$black: #13182c;
+$white: rgb(255, 255, 255);
+$lightgrey: rgb(239, 239, 239);
+$darkgray: rgb(169, 169, 169);
+$black: rgb(0,0,0);
 $indigo: #2e66e5;
 $slate: #5c667e;
 $cloud: #bdc5d5;
-$white: #ffffff;
 $graphite: #232940;
 $light-grey: #f7f8f9;
-$green: #158463;
-$red: #c94515;
+
+/* 5 Tree Type Colours --> Chart, Map, Map Controls */
+$purple: #6a3d9a;
+$blue: #1f78b4;
+$brown: #b15928;
+$green: #33a02c;
+$orange: #ff7f00;
+
+/* Highcharts Chart Colours */
+$gray-2: rgb(85,85,85);
+$white-1: rgb(248, 248 ,248);
+$white-2: rgb(241,247,255);
+$white-3: rgb(235,235,235);
 
 /* Fonts */ 
-$primary-font: "Titillium Web";
+// $primary-font: "Titillium Web";
+$primary-font: "Montserrat";
