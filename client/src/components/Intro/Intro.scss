@@ -1,0 +1,63 @@
+.intro {
+  &__container {
+    height: 105px;
+    width: 490px;
+  }
+  &__dropdown {
+		background-color: white;
+    width: 230px;
+    border-radius: 2px;
+    margin-left: 15px;  
+    height: 24px;
+    &-container{
+      display: flex;
+      align-items: row;
+      margin-bottom: 10px;
+    }
+    &-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 0px;
+      padding-top: 4px;
+    }
+	}
+  &__text {
+    margin: 0;
+    margin-bottom: 14px;
+    font-size: 14px;
+    font-weight: 400;
+  }
+  &__instructions {
+    // &-container {
+    // margin-top: 20px;
+    // }
+    &-paragraph {
+      margin: 0;
+      font-size: 12px;
+      font-weight: 300;
+      font-style: italic;
+    }
+  }
+}
+.bold {
+	font-weight: 500;
+}
+.ui.fluid.dropdown {
+  border: 1px solid rgba(34, 36, 38, 0.15);
+  border-radius: 2px;
+  height: 24px;
+}
+.divider.text{
+  padding-top: 2px;
+}
+.ui.dropdown .menu {
+  width: 229px;
+  border: 1px solid rgba(34, 36, 38, 0.15);
+}
+.ui.dropdown > .dropdown.icon {
+  margin-right: 7px;
+  margin-top: 5px;
+}
+.ui.dropdown > .text {
+  margin-left: 5px;
+}
