@@ -1,58 +1,42 @@
+a {
+  display: inline;
+  text-decoration: underline;
+}
 .chart {
-	// margin-top: 200px;
-	width: 480px;
+	width: 490px;
 	overflow: hidden;
+  margin-top: 30px;
 }
-
-.highcharts-figure,
-.highcharts-data-table table {
-	min-width: 210px;
-	max-width: 480px;
-	margin: 1em auto;
+.bold {
+  text-decoration: none;
 }
-
-#container {
-	height: 600px;
-}
-
-// .highcharts-background {
-// 	fill-opacity: #d3d3d3;
-// 	fill: #efefef;
-// 	// fill: #d3d3d3;
-// 	// stroke: #a4edba;
-// 	// stroke-width: 2px;
-// }
-// .highcharts-contextbutton {
-// 	fill: red;
-// }
-
+.highcharts-figure, 
 .highcharts-data-table table {
 	font-family: Verdana, sans-serif;
 	border-collapse: collapse;
-	border: 1px solid #ebebeb;
+	border: 1px solid $white-3;
 	margin: 10px auto;
 	text-align: center;
 	width: 100%;
 	max-width: 500px;
 }
-.highcharts-data-table caption {
-	padding: 1em 0;
-	font-size: 1.2em;
-	color: #555;
-}
 .highcharts-data-table th {
 	font-weight: 600;
 	padding: 0.5em;
 }
-.highcharts-data-table td,
-.highcharts-data-table th,
-.highcharts-data-table caption {
-	padding: 0.5em;
-}
 .highcharts-data-table thead tr,
 .highcharts-data-table tr:nth-child(even) {
-	background: #f8f8f8;
+	background: $white-1;
 }
 .highcharts-data-table tr:hover {
-	background: #f1f7ff;
+	background: $white-2;
 }
+.highcharts-caption {
+    font-family: $primary-font;
+    line-height: 1.5;
+    color: $gray-2;
+    font-size: 1.2em;
+    padding-left: 15px;
+}
+
+
