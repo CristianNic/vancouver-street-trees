@@ -1,26 +1,13 @@
-import React, { Component } from 'react'
+import React, { Component } from "react"
 
 class Header extends Component {
-  
-  // capitalizeFirstLetter(sentence) {
-  //   const words = sentence.split(" ");
-  //   const caps = words.map(word => word.charAt(0).toUpperCase() + word.substr(1).toLowerCase())
-  //   const newSentence = caps.join(" ");
-  //   return newSentence
-  // }
 
   render() {
 
     return (
       <header className="header">
         <div className="header__wrapper">
-          <h1 className="header__title">City of Vancouver Trees</h1>
-          <h1 className="header__neighbourhood">
-             Neighbourhood:
-             <span className="header__highlight-neighbourhood"> 
-                 {this.props.neighbourhood}
-             </span>
-           </h1>
+          <h1 className="header__title">Top 5 Trees Planted by the City of Vancouver</h1>
         </div>
       </header>
     )
@@ -28,4 +15,3 @@ class Header extends Component {
 }
 
 export default Header;
-
