@@ -1,8 +1,8 @@
 # Vancouver Trees
 
-What are the to top 5 common trees planted by the City of Vancouver in your area?
+What are the top 5 common trees planted by the City of Vancouver in your area?
 
-Client developed with React, Axios, Leaflet, Mapbox, and Plotly.
+Client developed with React, Axios, Leaflet, Mapbox, and Highcharts.
 
 Data provided from the City of Vancouver Open Data Portal.
 
