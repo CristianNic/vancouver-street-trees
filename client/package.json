@@ -16,17 +16,16 @@
     "leaflet": "^1.7.1",
     "leaflet-easybutton": "^2.4.0",
     "lodash": "^4.17.21",
-    "plotly.js": "^2.5.0",
     "prop-types": "^15.7.2",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-icons": "^4.2.0",
-    "react-lazy-load": "^3.1.13",
     "react-leaflet": "^3.1.0",
-    "react-plotly.js": "^2.5.1",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "4.0.3",
+    "react-scripts": "^4.0.3",
     "sass": "^1.32.8",
+    "semantic-ui-css": "^2.4.1",
+    "semantic-ui-react": "^2.0.4",
     "web-vitals": "^1.1.0"
   },
   "scripts": {
@@ -41,16 +40,9 @@
       "react-app/jest"
     ]
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  }
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not op_mini all"
+  ]
 }
