@@ -1,18 +1,11 @@
 .map {
-	width: 700px;
+	width: 690px;
+	position: relative;
 }
-
 .leaflet {
-  &-container {
-	  width: 100%;
-	  // height: 66.6rem;
-	  height: 600px;
-    border-radius: 10px;
-  }
-  &-popup-content {
-    margin-left: 1.2rem;
-    margin-right: 1.2rem;
-    margin-bottom: 0.7rem;
-  }
+	&-container {
+		width: 100%;
+		height: 570px;
+		border-radius: 10px;
+	}
 }
-
