@@ -1,18 +1,18 @@
 import React, { Component } from 'react';
 import { MapContainer, TileLayer, CircleMarker } from "react-leaflet";
-// import { URL_CUSTOM_OUTDOORS_DARKER } from '../../utils/MapboxToken';
+import { URL_CUSTOM_OUTDOORS_DARKER } from '../../utils/MapboxToken';
 import MapControls from '../MapControls/MapControls';
 import { colors } from '../../utils/Variables'
-const URL_CUSTOM_OUTDOORS_DARKER = process.env.REACT_APP_URL_CUSTOM_OUTDOORS_DARKER; 
+
 
 class Map extends Component {
-
+  
   state = {
     activeTrees: [true, true, true, true, true],
     cityCenter: [49.263454262907864, -123.12702707005086],    // Broadway and Oak
     radius: 1.5
   }
-
+  
   handleClickActiveTree = (e, value) => {
     if (value.id === 0) {
       const toggleTrees = this.state.activeTrees
@@ -46,59 +46,59 @@ class Map extends Component {
       })
     }
   }
-
+  
   render() {
     
     const { top5TreeNamesLowerCaps, geom0, geom1, geom2, geom3, geom4 } = this.props
     const { activeTrees, radius } = this.state
-
+    
     return (
       <section className="map">
         <MapControls
           activeTrees={activeTrees}
           handleClickActiveTree={this.handleClickActiveTree}
           top5TreeNamesLowerCaps={top5TreeNamesLowerCaps}
-        />
+          />
         <MapContainer
           center={this.state.cityCenter}
           zoom={12}
-        >
+          >
           <TileLayer
             url={`${URL_CUSTOM_OUTDOORS_DARKER}`}
             attribution="© <a href='http://osm.org/copyright'>OpenStreetMap</a> &nbsp; &VerticalSeparator; &nbsp; <a href='https://www.mapbox.com/about/maps/'>Mapbox</a>"
-          />
+            />
           {activeTrees[0] === false ? (<div></div>) :
             (geom0.map(latLng => (                        
               <CircleMarker
-                key={`${latLng[1].toString()}-${latLng[0].toString()}`}
-                className={this.props.top5TreeData.map(name => name.name)[0]}
-                center={[
-                  latLng[1],
-                  latLng[0]]}
+              key={`${latLng[1].toString()}-${latLng[0].toString()}`}
+              className={this.props.top5TreeData.map(name => name.name)[0]}
+              center={[
+                latLng[1],
+                latLng[0]]}
                 radius={radius}
                 opacity={1}
                 color={colors[0]}
                 stroke={false}
                 fill={true}
                 fillOpacity={1}
-              />
-            ))
-          )}  
+                />
+                ))
+                )}  
           {activeTrees[1] === false ? (<div></div>) :
             (geom1.map(latLng => (
               <CircleMarker
-                key={`${latLng[1].toString()}-${latLng[0].toString()}`}
-                className={this.props.top5TreeData.map(name => name.name)[1]}
-                center={[
-                  latLng[1],
-                  latLng[0]]}
+              key={`${latLng[1].toString()}-${latLng[0].toString()}`}
+              className={this.props.top5TreeData.map(name => name.name)[1]}
+              center={[
+                latLng[1],
+                latLng[0]]}
                 radius={radius}
                 opacity={1}
                 color={colors[1]}
                 stroke={false}
                 fill={true}
                 fillOpacity={1}
-              />
+                />
             ))
           )}
           {activeTrees[2] === false ? (<div></div>) :  
