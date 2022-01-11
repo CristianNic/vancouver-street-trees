@@ -4,7 +4,6 @@ import { URL_CUSTOM_OUTDOORS_DARKER } from '../../utils/MapboxToken';
 import MapControls from '../MapControls/MapControls';
 import { colors } from '../../utils/Variables'
 
-
 class Map extends Component {
   
   state = {
