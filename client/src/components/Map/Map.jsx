@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { MapContainer, TileLayer, CircleMarker } from "react-leaflet";
-import { URL_CUSTOM_OUTDOORS_DARKER } from '../../utils/MapboxToken';
+// import { URL_CUSTOM_OUTDOORS_DARKER } from '../../utils/MapboxToken';
 import MapControls from '../MapControls/MapControls';
 import { colors } from '../../utils/Variables'
+const URL_CUSTOM_OUTDOORS_DARKER = process.env.REACT_APP_URL_CUSTOM_OUTDOORS_DARKER; 
 
 class Map extends Component {
 
