@@ -61,43 +61,47 @@ class Map extends Component {
         <MapContainer
           center={this.state.cityCenter}
           zoom={12}
-          >
+        >
+          {/* <TileLayer
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a>'
+          /> */}
           <TileLayer
             url={`${URL_CUSTOM_OUTDOORS_DARKER}`}
             attribution="© <a href='http://osm.org/copyright'>OpenStreetMap</a> &nbsp; &VerticalSeparator; &nbsp; <a href='https://www.mapbox.com/about/maps/'>Mapbox</a>"
-            />
+          />
           {activeTrees[0] === false ? (<div></div>) :
             (geom0.map(latLng => (                        
               <CircleMarker
-              key={`${latLng[1].toString()}-${latLng[0].toString()}`}
-              className={this.props.top5TreeData.map(name => name.name)[0]}
-              center={[
-                latLng[1],
-                latLng[0]]}
+                key={`${latLng[1].toString()}-${latLng[0].toString()}`}
+                className={this.props.top5TreeData.map(name => name.name)[0]}
+                center={[
+                  latLng[1],
+                  latLng[0]]}
                 radius={radius}
                 opacity={1}
                 color={colors[0]}
                 stroke={false}
                 fill={true}
                 fillOpacity={1}
-                />
+              />
             ))
           )}  
           {activeTrees[1] === false ? (<div></div>) :
             (geom1.map(latLng => (
               <CircleMarker
-              key={`${latLng[1].toString()}-${latLng[0].toString()}`}
-              className={this.props.top5TreeData.map(name => name.name)[1]}
-              center={[
-                latLng[1],
-                latLng[0]]}
+                key={`${latLng[1].toString()}-${latLng[0].toString()}`}
+                className={this.props.top5TreeData.map(name => name.name)[1]}
+                center={[
+                  latLng[1],
+                  latLng[0]]}
                 radius={radius}
                 opacity={1}
                 color={colors[1]}
                 stroke={false}
                 fill={true}
                 fillOpacity={1}
-                />
+              />
             ))
           )}
           {activeTrees[2] === false ? (<div></div>) :  
@@ -152,9 +156,6 @@ class Map extends Component {
             ))
           )}   
         </MapContainer>
-     
-        
-
       </section>
     );
   }
