@@ -8,8 +8,8 @@ Built React, Axios, Leaflet, Mapbox, and Highcharts.
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/e71fb83e-c1e1-4bb4-ad5e-9e67bd8ae88f/deploy-status)](https://vancouver-street-trees.netlify.app/)
 
-<img src="../assets/screenshot_1.png">
-<img src="../assets/screenshot_3.png">
+<img src="../screenshots/screenshot_1.png">
+<img src="../screenshots/screenshot_3.png">
 
 ## Usage
 
