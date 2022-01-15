@@ -30,12 +30,25 @@ class Dashboard extends Component {
     geom3: [],
     geom4: [],
     activeTrees: [],
+    chartHeight: []
   }
   
   componentDidMount() {
     const selectedNeighbourhood = this.state.neighbourhood
+    this.setChartHeight();
     this.extractData(selectedNeighbourhood)
   }
+
+  setChartHeight() {
+    console.log("window.windowWidth", window.innerWidth)
+    if (window.innerWidth < 750) {
+      console.log("window.windowWidth", window.innerWidth)
+      this.setState({ chartHeight: 310 })
+    } else {
+      this.setState({ chartHeight: 410 })
+    }
+   
+  } 
   
   yearlyCount(years, count) {
     const yearlyCountArr = [];
@@ -105,9 +118,7 @@ class Dashboard extends Component {
   }
 
   async extractData(selectedNeighbourhood) {
-
     const { area, top5TreeNamesLowerCaps, top5TreesByCount, getTreeInfo, treeInfo } = await this.getData(selectedNeighbourhood)
-    console.log('treeInfo:', treeInfo)
     
     //--- For each tree, find how many trees were planted and in which years ---//
     const years = []
@@ -173,18 +184,18 @@ class Dashboard extends Component {
   }
 
   handleDropdown = (e, data) => {
-    this.getData(data.value)
+    this.extractData(data.value)
   }
   
   render() {
 
-    const { neighbourhood, top5TreeNamesLowerCaps, top5TotalPlanted, top5TreeData, activeTrees,
-      geom, geom0, geom1, geom2, geom3, geom4 } = this.state
+    const { neighbourhood, top5TreeNamesLowerCaps, top5TotalPlanted, top5TreeData,
+      activeTrees, geom, geom0, geom1, geom2, geom3, geom4, chartHeight } = this.state
     
     return (
       <section className="dashboard">
         <div className="dashboard__container">
-          <Header/>
+          <Header />
           <div className="dashboard__main">
             <div className="dashboard__left">
               <Intro
@@ -192,13 +203,14 @@ class Dashboard extends Component {
                 handleDropdown={this.handleDropdown}
               />
               <Chart
-                neighbourhood={neighbourhood}             
-                top5TotalPlanted={top5TotalPlanted}       
+                neighbourhood={neighbourhood}
+                top5TotalPlanted={top5TotalPlanted}
                 top5TreeData={top5TreeData}
+                chartHeight={chartHeight}
               /> 
             </div>
             <div className="dashboard__right">
-              <Map
+              <Map 
                 geom={geom}
                 geom0={geom0}
                 geom1={geom1}
@@ -209,10 +221,10 @@ class Dashboard extends Component {
                 top5TreeNamesLowerCaps={top5TreeNamesLowerCaps}
                 activeTrees={activeTrees}
               />
-              </div>
+            </div>
           </div>
-          <Footer/>
         </div>
+        <Footer/>
       </section>
     );
   }
