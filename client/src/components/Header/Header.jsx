@@ -7,7 +7,7 @@ class Header extends Component {
     return (
       <header className="header">
         <div className="header__wrapper">
-          <h1 className="header__title">What trees are in your neighbourhood?</h1>
+          <h1 className="header__title">What Trees Are in Your Neighbourhood?</h1>
         </div>
       </header>
     )
