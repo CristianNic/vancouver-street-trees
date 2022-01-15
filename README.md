@@ -15,6 +15,7 @@ Built React, Axios, Leaflet, Mapbox, and Highcharts.
 
 - Install modules inside client `npm install`
 
-- Map tiles can be sourced from OpenStreetMap or from [Mapbox](https://www.mapbox.com/). Instructions on how to compose a Mapbox token can be found inside `client/src/utils/MapboxToken-Sample.js`
+
+- To get up and running without designing tiles uncomment the OpenStreetMap tile layer inside `client/components/Map/Map.jsx`. Instructions on how to compose a [Mapbox](https://www.mapbox.com/) token can be found inside `.env.example`.
 
 - Inside client folder `npm start`, run and enjoy!
