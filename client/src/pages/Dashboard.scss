@@ -1,20 +1,44 @@
 .dashboard {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
 	background-color: $lightgrey;
-	padding-bottom: 1000px;
+	padding-bottom: 20px;
+	@include desktop {
+		padding-bottom: 50px;
+	}
 	&__container {
 		display: flex;
 		flex-direction: column;
-		width: 1200px;
-		margin: 0 auto;
+		padding-right: 7.5px;
+		padding-left: 7.5px;
+		@include desktop {
+			display: flex;
+			flex-direction: column;
+			margin: 0 auto;
+			padding: 0px;
+		}
 	}
 	&__main {
 		display: flex;
-		flex-direction: row;
-    justify-content: space-between;
+		flex-direction: column;
+		align-items: center;
+		@include desktop {
+			display: flex;
+			flex-direction: row;
+			justify-content: space-between;
+		}
 	}
 	&__left {
-		display: flex;
-		flex-direction: column;
-		justify-content: space-between;
+		@include desktop {
+			height: 570px;
+      margin-right: 10px;
+		}
+	}
+	&__right {
+		margin: 0;
+		@include desktop {
+      margin-left: 10px;
+		}
 	}
 }
