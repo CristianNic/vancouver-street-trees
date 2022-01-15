@@ -25,9 +25,8 @@ export const neighbourhoodsDropdown = [
 ]
 
 //--- Colors for Chart, Map Markers, Map Controls ---//
-// Source, Color Advisor: https://colorbrewer2.org/#type=qualitative&scheme=Paired&n=7 
-
 export const colors = ['#6a3d9a', '#1f78b4', '#b15928', '#33a02c', '#ff7f00'] 
 
+// Source, Color Advisor: https://colorbrewer2.org/#type=qualitative&scheme=Paired&n=7 
       
 
