@@ -12,16 +12,20 @@ export default function Chart(props) {
 
   const city_link = "https://opendata.vancouver.ca/explore/dataset/street-trees/information/?disjunctive.species_name&disjunctive.common_name&disjunctive.height_range_id"
 
-  const captionText = `<span class="bold">Source:</span>\
-  <a href="${city_link}">City of Vancouver Open Data Portal</a>\
-  <br><span class="bold">Data accuracy:\
-  Less then 50% of entries have a recorded year.</span>`
+  const captionText = 
+   `<div class="caption">\
+      <span class="bold">Data accuracy: Less then 50% of entries have a recorded year.</span><br>
+      <span class="bold">Source: </span><a href="${city_link}">City of Vancouver Open Data Portal</a>
+    </div>`
+  
+  console.log("Chart - height", props.chartHeight)
+
 
   drilldown(Highcharts);
 
   const chartOptions = {
-    chart: {
-      height: 410,   
+    chart: {    
+      height: props.chartHeight,             
       type: 'column',
       borderRadius: 10,
       events: {
@@ -90,11 +94,22 @@ export default function Chart(props) {
     },
     xAxis: {
       type: 'category',
+      labels: {
+        rotation: 0,
+        style: {
+          wordBreak: 'break-all',
+          textOverflow: 'allow',
+          fontSize: '10px',   
+        }
+      }
     },
     yAxis: {
       title: {
         text: 'Number of Trees'
       },
+      labels: {
+        autoRotationLimit: 10
+      }
     },
     legend: {
       enabled: false
@@ -141,10 +156,12 @@ export default function Chart(props) {
   return (
 
     <section className="chart" id="container">
-      <HighchartsReact
-        highcharts={Highcharts}
-        options={chartOptions}
-      />
+      <div className="chart_container">  
+        <HighchartsReact
+          highcharts={Highcharts}
+          options={chartOptions}
+        />
+      </div>
     </section>
   )
 }
