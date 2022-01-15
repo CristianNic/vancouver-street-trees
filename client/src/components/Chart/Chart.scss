@@ -1,16 +1,34 @@
 a {
-  display: inline;
-  text-decoration: underline;
+	display: inline;
+	text-decoration: underline;
 }
 .chart {
-	width: 490px;
-	overflow: hidden;
-  margin-top: 30px;
+	width: 360px;
+	margin-top: 7px;
+	@include desktop {
+		width: 490px;
+		overflow: hidden;
+		margin-top: 20px;
+	}
+}
+svg.highcharts-root {
+	height: 310px;
+	@include desktop {
+		height: 410px;
+	}
 }
 .bold {
-  text-decoration: none;
+	text-decoration: none;
 }
-.highcharts-figure, 
+.caption {
+	margin-top: 22px;
+	font-size: 10px;
+	@include desktop {
+		margin-top: 25px;
+		font-size: 12px;
+	}
+}
+.highcharts-figure,
 .highcharts-data-table table {
 	font-family: Verdana, sans-serif;
 	border-collapse: collapse;
@@ -32,11 +50,9 @@ a {
 	background: $white-2;
 }
 .highcharts-caption {
-    font-family: $primary-font;
-    line-height: 1.5;
-    color: $gray-2;
-    font-size: 1.2em;
-    padding-left: 15px;
+	font-family: $primary-font;
+	line-height: 1.5;
+	color: $gray-2;
+	font-size: 1.2em;
+	padding-left: 15px;
 }
-
-
