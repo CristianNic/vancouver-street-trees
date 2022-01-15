@@ -8,7 +8,7 @@ class Map extends Component {
   
   state = {
     activeTrees: [true, true, true, true, true],
-    cityCenter: [49.263454262907864, -123.12702707005086],    // Broadway and Oak
+    cityCenter: [49.26834299673637, -123.12674927234181],   //  Charleson Dog Park, False Creek
     radius: 1.5
   }
   
@@ -53,11 +53,11 @@ class Map extends Component {
     
     return (
       <section className="map">
-        <MapControls
+        <MapControls 
           activeTrees={activeTrees}
           handleClickActiveTree={this.handleClickActiveTree}
           top5TreeNamesLowerCaps={top5TreeNamesLowerCaps}
-          />
+        />
         <MapContainer
           center={this.state.cityCenter}
           zoom={12}
@@ -81,8 +81,8 @@ class Map extends Component {
                 fill={true}
                 fillOpacity={1}
                 />
-                ))
-                )}  
+            ))
+          )}  
           {activeTrees[1] === false ? (<div></div>) :
             (geom1.map(latLng => (
               <CircleMarker
@@ -152,9 +152,13 @@ class Map extends Component {
             ))
           )}   
         </MapContainer>
+     
+        
+
       </section>
     );
   }
 }
 
 export default Map;
+
