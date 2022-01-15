@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { Button } from "semantic-ui-react";
-// import { colors } from "../../utils/Variables";
 
 class MapControls extends Component {
 
