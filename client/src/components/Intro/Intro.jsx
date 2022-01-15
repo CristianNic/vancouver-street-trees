@@ -9,7 +9,7 @@ export default class Intro extends Component {
       <section className="intro">
         <div className="intro__container">
           <div className="intro__dropdown-container">
-            <h2 className="intro__dropdown-title">Select Neighbourhood</h2>
+            <h2 className="intro__dropdown-title">Neighbourhood</h2>
             <div className="intro__dropdown">
               <Dropdown
                 text={this.props.neighbourhood}
