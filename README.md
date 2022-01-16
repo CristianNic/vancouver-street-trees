@@ -8,13 +8,12 @@ Built React, Axios, Leaflet, Mapbox, and Highcharts.
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/e71fb83e-c1e1-4bb4-ad5e-9e67bd8ae88f/deploy-status)](https://vancouver-street-trees.netlify.app/)
 
-<img src="../screenshots/screenshot_1.png">
-<img src="../screenshots/screenshot_3.png">
+<img src="../screenshots/screenshot_1.jpg">
+<img src="../screenshots/screenshot_2.jpg">
 
 ## Usage
 
 - Install modules inside client `npm install`
-
 
 - To get up and running without designing tiles uncomment the OpenStreetMap tile layer inside `client/components/Map/Map.jsx` Instructions on how to compose a [Mapbox](https://www.mapbox.com/) token can be found inside `.env.example`
 
