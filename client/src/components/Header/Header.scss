@@ -4,12 +4,12 @@
 	margin-bottom: 3px;
   display: flex;
 &__wrapper {
-    width: 360px;
+    width: 198px;
     margin-bottom: 5px;
 		@include desktop {
       display: flex;
       justify-content: center;
-      width: 1200px;
+      width: 600px;
 			margin: 0 auto;
 			margin-top: 20px;
 			margin-bottom: 20px;
@@ -17,9 +17,12 @@
 	}
 	&__title {
 		font-size: 17px;
+    line-height: 22px;
+    padding-top: 10px;
 		@include desktop {
       font-size: 25px;
 			font-weight: 600;
+      padding-top: 0px;
 		}
 	}
 }
