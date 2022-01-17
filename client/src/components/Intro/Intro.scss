@@ -11,8 +11,8 @@
 		}
 	}
 	&__dropdown {
-		background-color: white;
-		width: 230px;
+		background-color: $white;
+		width: 235px;
 		border-radius: 2px;
 		height: 24px;
 		@include desktop {
@@ -22,7 +22,7 @@
 		&-container {
 			display: flex;
 			flex-direction: row;
-			justify-content: space-around;
+      justify-content: space-between;
 			@include desktop {
 				display: flex;
 				flex-direction: row;
@@ -31,7 +31,6 @@
 			}
 		}
 		&-title {
-			padding-left: 3px;
 			margin-bottom: 0px;
 			font-weight: 600;
 			font-size: 14px;
