@@ -2,11 +2,7 @@
 
 Maps and charts the top five trees planted by the City of Vancouver by neighbourhood and in all of Vancouver.
 
-Built React, Axios, Leaflet, Mapbox, and Highcharts.
-
-[Live Demo](https://vancouver-street-trees.netlify.app/)
-
-[![Netlify Status](https://api.netlify.com/api/v1/badges/e71fb83e-c1e1-4bb4-ad5e-9e67bd8ae88f/deploy-status)](https://vancouver-street-trees.netlify.app/)
+Built with React, Leaflet, Mapbox, and Highcharts.
 
 <img src="../screenshots/screenshot_1.jpg">
 <img src="../screenshots/screenshot_2.jpg">
